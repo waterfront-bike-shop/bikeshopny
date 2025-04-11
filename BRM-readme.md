@@ -19,3 +19,7 @@ Payment
 Connect to Lightspeed R
   - https://brm2.bikerentalmanager.com/support/solutions/articles/42000070089-lightspeed-r-integration-configuration
   - 11111111111 eleven 1s for the ERM
+
+Set up min and max rentals
+  1. https://brm2.bikerentalmanager.com/support/solutions/articles/42000084061-min-max-rental-duration-by-product-family
+  2. Go to Settings -> optional features -> Online buffers + Online Rental duration
