@@ -13,7 +13,7 @@ const HomePage: FC = () => {
       <Hero headline="Welcome to the best Bike Shop on the Hudson River!" href="/rentals" image="/images/hudson_river_aerial_view.jpg"/>
 
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      {/* <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
         <section className="text-center py-16">
           
         </section>
@@ -31,7 +31,7 @@ const HomePage: FC = () => {
           <Contact />
           <KayakBadge />
         </footer>
-      </main>
+      </main> */}
     </>
   );
 };
