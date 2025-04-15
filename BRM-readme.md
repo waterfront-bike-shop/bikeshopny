@@ -83,3 +83,12 @@ regular ->
 
 ---
 # MISC
+
+
+# ----- NOTES 4/15/2025 ------------------------
+## Add Events with module
+- SETTING > OPTIONAL MODULES > EVENTS > NEW DETAIL
+- Add Title, etc.
+- Create Blocker Booking -- 
+1. Create duplicate listings for the higher price items. 
+

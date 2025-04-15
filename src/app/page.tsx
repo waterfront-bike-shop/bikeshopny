@@ -10,7 +10,7 @@ import Hero from "./components/Hero";
 const HomePage: FC = () => {
   return (
     <>
-      <Hero headline="Welcome to the best Bike Shop on the Hudson River!" href="/rentals" image="/images/hudson_river_aerial_view.jpg"/>
+      <Hero headline="Welcome to the best Bike Shop on the Hudson River!" href="/rentals" button_text="Rent a bike online" image="/images/hudson_river_aerial_view.jpg"/>
 
 
       {/* <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">

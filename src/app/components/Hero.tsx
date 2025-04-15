@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button"
 interface HeroIconProps {
   headline: string
   href: string
+  button_text: string
   image: string // path to the background image
 }
 
-const Hero: React.FC<HeroIconProps> = ({ headline, href, image }) => {
+const Hero: React.FC<HeroIconProps> = ({ headline, href, image, button_text="Learn More" }) => {
   return (
     <section
       className="relative w-full h-[60vh] md:h-[75vh] bg-cover bg-center"
@@ -23,7 +24,7 @@ const Hero: React.FC<HeroIconProps> = ({ headline, href, image }) => {
         </h1>
         <Link href={href}>
           <Button className="bg-red-600 hover:bg-red-700 text-white text-lg px-6 py-3 rounded-xl shadow-md">
-            Learn More
+            {button_text}
           </Button>
         </Link>
       </div>
