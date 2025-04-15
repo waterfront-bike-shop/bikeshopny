@@ -5,9 +5,7 @@ import Services from "./components/Services";
 import RentalInfo from "./components/RentalInfo";
 import Contact from "./components/Contact";
 import KayakBadge from "./components/KayakBadge";
-import Meta from "./components/Meta";
 import BookingIframe from "./components/BookingFrame";
-import Header from "./components/Header";
 
 const HomePage: FC = () => {
   return (
