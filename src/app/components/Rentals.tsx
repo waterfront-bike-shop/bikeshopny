@@ -1,8 +1,14 @@
 // app/components/Rentals.tsx
+
+import { Button } from "@/components/ui/button"
+
 const Rentals: React.FC = () => {
   return (
     <section className="py-10">
       <h2 className="text-2xl font-bold mb-6">Bicycle Rentals</h2>
+      <Button className="bg-red-500 text-white hover:bg-red-600">Reserve Today </Button>  
+
+
       
       <div className="grid gap-8 md:grid-cols-2">
         {/* 24 Speed City Bike */}
