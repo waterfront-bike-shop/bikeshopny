@@ -6,13 +6,14 @@ import Rentals from "./components/Rentals";
 import Contact from "./components/Contact";
 import KayakBadge from "./components/KayakBadge";
 import Meta from "./components/Meta";
+import BookingIframe from "./components/BookingFrame";
 
 const HomePage: FC = () => {
   return (
     <>
       <Meta />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
         <section className="text-center py-16">
           <Hero />
         </section>
@@ -24,6 +25,8 @@ const HomePage: FC = () => {
         <section className="space-y-8">
           <Rentals />
         </section>
+
+        <BookingIframe />
         <footer>
           <Contact />
           <KayakBadge />
