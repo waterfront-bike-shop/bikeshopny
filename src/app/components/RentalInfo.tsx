@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 
-const Rentals: React.FC = () => {
+const RentalInfo: React.FC = () => {
   return (
     <section className="py-10">
       <h2 className="text-2xl font-bold mb-6">Bicycle Rentals</h2>
@@ -52,4 +52,4 @@ const Rentals: React.FC = () => {
   );
 };
 
-export default Rentals;
+export default RentalInfo;

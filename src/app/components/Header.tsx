@@ -29,8 +29,9 @@ const Header = () => {
           height={77}
           className="hidden sm:block md:mr-10"
         />
-        <span className="text-xl md:text-3xl xl:text-4xl font-bold "><span className="text-sky-500">WATERFRONT</span> Bicycle Shop</span>
-
+        <span className="text-xl md:text-3xl xl:text-4xl font-bold ">
+          <span className="text-sky-500">WATERFRONT</span> Bicycle Shop
+        </span>
       </Link>
 
       {/* Desktop Nav */}
@@ -44,9 +45,11 @@ const Header = () => {
             {link.name}
           </Link>
         ))}
-        <Button className="bg-red-500 text-white hover:bg-red-600">
-          Book your Bike Rentals
-        </Button>
+        <Link href="/rentals" passHref>
+          <Button className="bg-red-500 text-white hover:bg-red-600">
+            Book your Bike Rentals
+          </Button>
+        </Link>
       </nav>
 
       {/* Mobile Menu */}

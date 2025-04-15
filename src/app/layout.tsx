@@ -1,6 +1,7 @@
 import "./globals.css";
 import Meta from "./components/Meta";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 <Meta />
 
@@ -14,6 +15,7 @@ export default function RootLayout({
       <body>
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

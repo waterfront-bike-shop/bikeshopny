@@ -2,7 +2,7 @@
 import { FC } from "react";
 import Hero from "./components/Hero";
 import Services from "./components/Services";
-import Rentals from "./components/Rentals";
+import RentalInfo from "./components/RentalInfo";
 import Contact from "./components/Contact";
 import KayakBadge from "./components/KayakBadge";
 import Meta from "./components/Meta";
@@ -25,7 +25,7 @@ const HomePage: FC = () => {
         </section>
 
         <section className="space-y-8">
-          <Rentals />
+          <RentalInfo />
         </section>
 
         <BookingIframe />
