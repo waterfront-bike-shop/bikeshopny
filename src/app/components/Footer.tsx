@@ -87,6 +87,8 @@ const Footer: React.FC = () => {
               <InstagramLogo size={32} />
             </a>
 
+            <p>GOOGLE RATING</p>
+
             {/* TripAdvisor Logo and Stars */}
             <a
               href="https://www.tripadvisor.com/Attraction_Review-g60763-d8444605-Reviews-Waterfront_Bicycle_Shop-New_York_City_New_York.html"

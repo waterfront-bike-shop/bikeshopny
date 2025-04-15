@@ -91,4 +91,49 @@ regular ->
 - Add Title, etc.
 - Create Blocker Booking -- 
 1. Create duplicate listings for the higher price items. 
+2. Virtual inventory
+   1. Product Family level (green 1st child level)
+   2. Inventory to TAE -> inventory Tour and Experience --> This way it doesn't count against your total for billing
+3. FYI -> hover over image and SRC in lower right corner to find source URL. 
+
+4. Update Settings > Notifications > What > Content: 
+   1. For 
+   2. Add in terms of condition for event itself 
+  3. ref allspeed.com to take a look at their ski services and their boot fittings. They've been using events for years. Only appts online. 
+
+5. Blocker Booking: 
+  1. Set time range
+  2. Seperate booking per category (keep it manageable)
+  3. Who > FN Blocker LN Booking (but up to you)
+  4. Leave as Provisional Booking (real booking, no financial stuff tied to it)
+
+
+HOMEWORK:
+EVENTS DETAILS AND TERMS AND CONDITIONS
+
+SETTINGS > CUSTOMER BOOKING ONLINE > CUSTOMIZATION --> PRIMARY/SECONDAREY (BUTTONS) 
+
+WAIVERS-> 
+
+https://us.bikerentalmanager.com/book.html?shop=waterfrontbicycleshop&event_ref=5%20Boro%20Bike%20Tour%202025
+
+Multiple pricing in future.
+Discount pricing/one time use/product/customer, etc. 
+SMS in future...
+
+MAKE A DISCOUNT MODE. 
+
+AUTO_CANCEL-> off/on ->
+
+# TODO!!!!!!!
+WAIVER https://us.bikerentalmanager.com/app/settings/general/store-details
+UNDER CONFIRMED https://us.bikerentalmanager.com/app/settings/notifications/what -> signature and online here
+PRE RENTAL 6am day of the rental, but 30 days out, no email. 
+Stripe, set up the payment options you want. 
+
+OK, for non cc payments on Stripe:
+1st thing to do. Add card info into Stripe-> Add credit card 
+Payment type - pre-auth i.e. value of bicycle or part More so on Road Bike Rentals, couldn't think of fair price. Most shops hold $100-200 per bike. What is the deducatable
+  Hold auto releases after 7 days. Or you clease on x to release funds
+  Hit capture button to capture.  or edit
 

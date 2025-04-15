@@ -10,7 +10,7 @@ import { List } from "phosphor-react";
 const navLinks = [
   { name: "Rentals", href: "/rentals" },
   { name: "About", href: "/about" },
-  { name: "Shop", href: "/shop" },
+  { name: "Parts & Accessories", href: "/parts-and-accessories" },
   { name: "Repairs", href: "/repairs" },
 ];
 
