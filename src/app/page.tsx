@@ -1,11 +1,11 @@
 // app/page.tsx
 import { FC } from "react";
 import Hero from "./components/Hero";
-import Services from "./components/Services";
-import RentalInfo from "./components/RentalInfo";
-import Contact from "./components/Contact";
-import KayakBadge from "./components/KayakBadge";
-import BookingIframe from "./components/BookingFrame";
+// import Services from "./components/Services";
+// import RentalInfo from "./components/RentalInfo";
+// import Contact from "./components/Contact";
+// import KayakBadge from "./components/KayakBadge";
+// import BookingIframe from "./components/BookingFrame";
 
 const HomePage: FC = () => {
   return (
