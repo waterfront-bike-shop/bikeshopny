@@ -23,4 +23,4 @@ const AboutPage: FC = () => {
   );
 };
 
-export default AboutPage;
+export default AboutPage; 
