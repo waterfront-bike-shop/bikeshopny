@@ -1,34 +1,41 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { InstagramLogo, Star } from 'phosphor-react';
-import KayakBadge from './KayakBadge';
+import React, { useEffect, useState } from "react";
+import { InstagramLogo, Star } from "phosphor-react";
+import KayakBadge from "./KayakBadge";
 
 const Footer: React.FC = () => {
-  const [ratings, setRatings] = useState<{ tripAdvisor: number | null; yelp: number | null } | null>(null);
+  const [ratings, setRatings] = useState<{
+    tripAdvisor: number | null;
+    yelp: number | null;
+    google: number | null;
+  } | null>(null);
 
-  // Fetch and cache ratings
   useEffect(() => {
     const fetchRatings = async () => {
-      // Check if cached data exists and is still valid
-      const cachedRatings = localStorage.getItem('ratings');
-      const cachedTime = localStorage.getItem('ratingsTimestamp');
+      const cachedRatings = localStorage.getItem("ratings");
+      const cachedTime = localStorage.getItem("ratingsTimestamp");
       const currentTime = Date.now();
 
-      // If cached data exists and is not older than 24 hours, use it
-      if (cachedRatings && cachedTime && currentTime - parseInt(cachedTime) < 86400000) {
+      if (
+        cachedRatings &&
+        cachedTime &&
+        currentTime - parseInt(cachedTime) < 86400000
+      ) {
         setRatings(JSON.parse(cachedRatings));
       } else {
-        // Fetch ratings dynamically (this is a mock URL, replace with actual API endpoint)
         const tripAdvisorRating = await fetchTripAdvisorRating();
         const yelpRating = await fetchYelpRating();
+        const googleRating = await fetchGoogleRating();
 
-        const newRatings = { tripAdvisor: tripAdvisorRating, yelp: yelpRating };
+        const newRatings = {
+          tripAdvisor: tripAdvisorRating,
+          yelp: yelpRating,
+          google: googleRating,
+        };
 
-        // Cache the fetched ratings with the current timestamp
-        localStorage.setItem('ratings', JSON.stringify(newRatings));
-        localStorage.setItem('ratingsTimestamp', currentTime.toString());
-
+        localStorage.setItem("ratings", JSON.stringify(newRatings));
+        localStorage.setItem("ratingsTimestamp", currentTime.toString());
         setRatings(newRatings);
       }
     };
@@ -36,24 +43,24 @@ const Footer: React.FC = () => {
     fetchRatings();
   }, []);
 
-  // Mock function to fetch TripAdvisor rating (replace with actual API call)
   const fetchTripAdvisorRating = async (): Promise<number> => {
-    // Replace this with actual API request logic
-    return 4.9; // Static for now
+    return 4.9; // Replace with real fetch
   };
 
-  // Mock function to fetch Yelp rating (replace with actual API call)
   const fetchYelpRating = async (): Promise<number> => {
-    // Replace this with actual API request logic
-    return 4.7; // Static for now
+    return 4.7; // Replace with real fetch
   };
 
-  if (!ratings) return <div>Loading...</div>; // Show loading while data is fetched
+  const fetchGoogleRating = async (): Promise<number> => {
+    return 4.8; // Replace with real fetch
+  };
+
+  if (!ratings) return <div>Loading...</div>;
 
   return (
     <footer className="bg-blue-800 text-white py-10 px-6">
       <div className="max-w-screen-xl mx-auto space-y-6 sm:flex sm:justify-between sm:items-center sm:space-y-0">
-        {/* Left Column: Contact Information */}
+        {/* Left Column: Contact Info */}
         <div className="space-y-4 sm:space-y-6">
           <h2 className="text-2xl font-bold">Contact Us</h2>
           <div className="space-y-2">
@@ -74,58 +81,72 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Social Links & Kayak Badge */}
+        {/* Right Column: Social & Ratings */}
         <div className="space-y-4 sm:space-y-6">
-          <div className="flex items-center space-x-6">
-            {/* Instagram Link */}
+          <div className="flex flex-wrap gap-4 items-center">
+            {/* Instagram */}
             <a
               href="https://www.instagram.com/waterfrontbicycleshop/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white hover:text-gray-300"
             >
-              <InstagramLogo size={32} />
+              <InstagramLogo size={40} />
             </a>
 
-            <p>GOOGLE RATING</p>
-
-            {/* TripAdvisor Logo and Stars */}
+            {/* Google */}
             <a
+              href="https://g.co/kgs/eMAUaVi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white flex items-center space-x-2 hover:text-gray-300"
+            >
+              <img
+                src="/logos/google_g_icon.png"
+                alt="Google G Icon"
+                className="h-8 w-8 rounded"
+              />
+              <div className="flex items-center">
+                <Star size={20} weight="fill" />
+                <span className="text-lg">{ratings.google}4.8</span>
+              </div>
+            </a>
+
+            {/* TripAdvisor */}
+            {/* <a
               href="https://www.tripadvisor.com/Attraction_Review-g60763-d8444605-Reviews-Waterfront_Bicycle_Shop-New_York_City_New_York.html"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white flex items-center space-x-2 hover:text-gray-300"
             >
-              {/* TripAdvisor Logo */}
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/5/55/Tripadvisor_logo_2019.svg"
                 alt="TripAdvisor Logo"
-                className="h-8 w-8" // Logo size
+                className="h-8 w-8"
               />
               <div className="flex items-center">
                 <Star size={20} weight="fill" />
-                <span className="text-lg">{ratings.tripAdvisor}</span> {/* Dynamic rating */}
+                <span className="text-lg">{ratings.tripAdvisor}</span>
               </div>
-            </a>
+            </a> */}
 
-            {/* Yelp Logo and Stars */}
-            <a
+            {/* Yelp */}
+            {/* <a
               href="https://www.yelp.com/biz/waterfront-bicycle-shop-new-york"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white flex items-center space-x-2 hover:text-gray-300"
             >
-              {/* Yelp Logo */}
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/8/84/Yelp_Logo_2019.png"
                 alt="Yelp Logo"
-                className="h-8 w-8" // Logo size
+                className="h-8 w-8"
               />
               <div className="flex items-center">
                 <Star size={20} weight="fill" />
-                <span className="text-lg">{ratings.yelp}</span> {/* Dynamic rating */}
+                <span className="text-lg">{ratings.yelp}</span>
               </div>
-            </a>
+            </a> */}
           </div>
 
           {/* Kayak Badge */}
