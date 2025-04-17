@@ -20,6 +20,9 @@ const Shop: React.FC = () => {
             We keep a large selection of product in stock at all times for the
             spur of the moment upgrade or repair.
           </p>
+          <p>
+            Stop in the shop to see what we have.
+          </p>
         </div>
       </section>
     </>

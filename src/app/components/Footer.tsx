@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
               />
               <div className="flex items-center">
                 <Star size={20} weight="fill" />
-                <span className="text-lg">{ratings.google}4.8</span>
+                <span className="text-lg">{ratings.google}</span>
               </div>
             </a>
 

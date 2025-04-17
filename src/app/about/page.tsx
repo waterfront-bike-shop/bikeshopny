@@ -4,23 +4,20 @@ import Hero from "../components/Hero";
 const AboutPage: FC = () => {
   return (
     <>
-      <Hero
-        headline="About"
-        image="/images/temp-inside-bike-shop.jpg"
-      />
+      <Hero headline="About" image="/images/hudson_river_aerial_view.jpg" />
       <section className="py-10">
         <div className="max-w-screen-xl mx-auto px-6">
-          <h1 className="text-2xl mb-2 font-bold">About Waterfront Bike Shop</h1>
-          <p>
-            Lorem ipsum dolor sit amet, per ad atqui consul scripta. Et vim ullum scribentur. Mel ad erant neglegentur. Ad duo fuisset intellegam, has id hinc reprimique adversarium. Vis ei altera antiopam, eu mei essent salutatus, duo no quot natum intellegat.
-          </p>
-          <p className="mt-4">
-            An inermis voluptaria vel. Vel minim nonumy ex, ludus quando mnesarchum ex vis. Has an vero facete, at pro placerat oporteat detraxit, dicat ignota accusamus in vis. Pri ut elit prompta habemus. Est ex cibo intellegebat, in tritani menandri definiebas mei. Vim eruditi consequuntur eu, cu elit delectus quo, molestie adipiscing quo eu. Mea no vidit soleat option, te has viris corrumpit, autem homero insolens usu no.
-          </p>
+          <h1 className="text-2xl mb-2 font-bold">
+            About Waterfront Bike Shop
+          </h1>
+          <p>Come explore the Hudson River Park and beyond. We have over 100 quality hybrid bicycle for rent. We also offer tune ups, repairs, parts and accessories.</p>
+          <p className="mt-4">Open since 2009 in New York City's West Village. </p>
+          <h1 className="text-2xl mb-2 mt-4 font-bold">Summer Hours</h1>
+          <p>Monday - Sunday 10:00 am - 7:00 pm</p>
         </div>
       </section>
     </>
   );
 };
 
-export default AboutPage; 
+export default AboutPage;

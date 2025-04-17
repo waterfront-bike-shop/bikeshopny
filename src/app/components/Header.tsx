@@ -45,9 +45,9 @@ const Header = () => {
             {link.name}
           </Link>
         ))}
-        <Link href="/rentals" passHref>
+        <Link href="/five-boro-rentals" passHref>
           <Button className="bg-red-500 text-white hover:bg-red-600">
-            Book your Bike Rentals
+            5 Boro Bike Rental
           </Button>
         </Link>
       </nav>
@@ -76,7 +76,7 @@ const Header = () => {
                 className="mt-4 bg-red-500 text-white hover:bg-red-600"
                 onClick={() => setOpen(false)}
               >
-                Book your Bike Rentals
+                5 Boro Bike Rental
               </Button>
             </div>
           </SheetContent>
