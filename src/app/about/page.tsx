@@ -18,8 +18,26 @@ const AboutPage: FC = () => {
           <p className="mt-4">
             Open since 2009 in New York City&apos;s West Village.
           </p>
+
           <h1 className="text-2xl mb-2 mt-4 font-bold">Summer Hours</h1>
           <p>Monday - Sunday 10:00 am - 7:00 pm</p>
+
+          {/* Map Section */}
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold mb-2">Find Us</h2>
+            <div className="w-full h-[400px]">
+              <iframe
+                title="Waterfront Bicycle Shop Location"
+                src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d3023.3264615567296!2d-74.0100118!3d40.73284149999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e3!4m0!4m5!1s0x89c259ec5cd405db%3A0xf620bd097728daeb!2sWaterfront%20Bicycle%20Shop%2C%20391%20West%20St%2C%20New%20York%2C%20NY%2010014!3m2!1d40.732842399999996!2d-74.0100231!5e0!3m2!1sen!2sus!4v1745265025582!5m2!1sen!2sus"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
+          </div>
         </div>
       </section>
     </>
