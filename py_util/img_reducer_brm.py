@@ -2,6 +2,18 @@ import os
 import argparse
 from PIL import Image
 
+# Register support for HEIC/HEIF and AVIF
+try:
+    import pillow_heif
+    pillow_heif.register_heif_opener()
+except ImportError:
+    print("⚠️  HEIF/HEIC support not enabled (install `pillow-heif`)")
+
+try:
+    import pillow_avif 
+except ImportError:
+    print("⚠️  AVIF support not enabled (install `pillow-avif-plugin`)")
+
 def resize_and_extend_image(input_path, output_path):
     # Open the image
     img = Image.open(input_path)

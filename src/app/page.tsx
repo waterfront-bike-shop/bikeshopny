@@ -10,7 +10,7 @@ const HomePage: FC = () => {
         headline="Rent a bike for the 2025 5 Boro Bike Tour"
         subheadings={[
           "$99 per bike for Sat May 03, and Sun May 04 two day minimum",
-          "(10 road bikes are available for $200 for the weekend)",
+          "(Road bikes are available for $200)",
         ]}
         href="/five-boro-rentals"
         button_text="Book your 5 Boro Bicycle Rental"

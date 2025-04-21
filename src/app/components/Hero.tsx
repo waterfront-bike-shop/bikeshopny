@@ -33,7 +33,7 @@ const Hero: React.FC<HeroProps> = ({
         {subheadings?.map((line, idx) => (
           <h3
             key={idx}
-            className="text-3xl font-medium leading-snug mb-2 text-white drop-shadow-lg"
+            className="text-2xl font-medium leading-snug mb-2 text-white drop-shadow-lg"
           >
             {line}
           </h3>
