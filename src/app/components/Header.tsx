@@ -72,12 +72,14 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              <Button
-                className="mt-4 bg-red-500 text-white hover:bg-red-600"
-                onClick={() => setOpen(false)}
-              >
-                5 Boro Bike Rental
-              </Button>
+              <Link href="/five-boro-rentals" passHref>
+                <Button
+                  className="mt-4 bg-red-500 text-white hover:bg-red-600"
+                  onClick={() => setOpen(false)}
+                >
+                  5 Boro Bike Rental
+                </Button>
+              </Link>
             </div>
           </SheetContent>
         </Sheet>

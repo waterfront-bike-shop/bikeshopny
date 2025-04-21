@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .venv
+product_getter.py
 
 # debug
 npm-debug.log*
