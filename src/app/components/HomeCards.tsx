@@ -21,9 +21,7 @@ export default function HomeCards() {
             />
           </div>
           <h3 className="text-lg font-semibold mb-2">Repairs</h3>
-          <p>
-          On the spot repairs and tune- ups available.
-          </p>
+          <p>On the spot repairs and tune- ups available.</p>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
           Repairs
@@ -70,8 +68,7 @@ export default function HomeCards() {
           </div>
           <h3 className="text-lg font-semibold mb-2">7 Speed Step-Through</h3>
           <p>
-            15 upright bikes. Basket, helmet, lock included. Sizes: Small (up to
-            5'8"), Large (up to 5'10").
+            Sizes: Small (up to 5&apos;8&quot;), Large (up to 5&apos;10&quot;).
           </p>
           <ul className="text-sm mt-2">
             <li>1 hour – $15</li>
