@@ -38,7 +38,23 @@ Set up min and max rental durations
 - Write/Update waiver text -> https://us.bikerentalmanager.com/app/settings/general/store-details
 - Activate signature requirement: on the 'confirmation' email https://us.bikerentalmanager.com/app/settings/notifications/what -> check the signature and online signing here
 
+## Terms and Conditions
 
+https://brm2.bikerentalmanager.com/support/solutions/articles/42000073586-your-terms-and-conditions
+
+
+
+We would recommend at the minimum you publish your full terms and conditions in these places:
+
+    on your website 
+    at your point of sale
+    on your online booking wizard  (BRM)
+
+BRM provides a facility for your customers to read your T&C's when they are making a booking and check a box to confirm they have read and understood them.
+
+You Copy & Paste your T&C's here:
+
+settings > Customer Booking (Online) > Terms
 
 
 Meeting Notes 4/11/2025

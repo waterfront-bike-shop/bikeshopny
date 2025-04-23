@@ -1,5 +1,5 @@
 // app/components/Meta.tsx
-
+// NOTE: This was not importing into the top level Layout.tsx, after a debug attempt, just added information directly to layout.tsx
 import Head from 'next/head';
 
 const Meta = () => {

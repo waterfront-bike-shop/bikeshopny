@@ -1,6 +1,7 @@
 // app/page.tsx
 import { FC } from "react";
 import Hero from "./components/Hero";
+import HomeCards from "./components/HomeCards";
 
 const HomePage: FC = () => {
   return (
@@ -16,6 +17,7 @@ const HomePage: FC = () => {
         button_text="Book your 5 Boro Bicycle Rental"
         image="/images/5-boro-riders.jpg"
       />
+      <HomeCards />
     </>
   );
 };
