@@ -6,7 +6,8 @@ const RepairPage: FC = () => {
     <>
       <Hero
         headline="Repairs, Tune-ups and Bike Cleanings"
-        image="/images/christian_bike_mechanic.jpg"
+        // image="/images/christian_bike_mechanic.jpg" // looks great in vertical format
+        image = "/images/storefront_west_and_christopher.jpg"
       />
       <section className="py-10">
         <div className="max-w-screen-xl mx-auto px-6">

@@ -5,12 +5,14 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
+// Flexible Hero image with Headline, and optional sub headline, and optional button/link.
+
 interface HeroProps {
-  headline: string;
-  subheadings?: string[];
-  href?: string;
-  button_text?: string;
-  image: string; // path to the background image
+  headline: string;       // Add in the large headline text to layer over the image. Idea: Default to page name, i.e "About"
+  subheadings?: string[]; // Optional: Use only if needed.
+  href?: string;          // Optional: Use if you want a button that goes somewhere
+  button_text?: string;   // Optional: Text on the button if you're using
+  image: string;          // path to the background image. i.e.: "/images/storefront_west_and_christopher.jpg" in the /Public folder
 }
 
 const Hero: React.FC<HeroProps> = ({

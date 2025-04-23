@@ -28,6 +28,17 @@ Set up min and max rental durations
 
 1. Integration instructions: https://brm2.bikerentalmanager.com/support/solutions/articles/42000068983-setting-up-stripe-as-your-payment-processor
   - Test card number / Card Brand: 4242 4242 4242 4242	Visa
+2. Refunds: https://brm2.bikerentalmanager.com/support/solutions/articles/42000074030-refunding-via-stripe
+   1. Go into reservation. 
+   2. Actions > More > "Stripe Refunds"
+   3. Manually change the 'Stage' of the reservation from cancel the reservation
+   
+## Waiver
+
+- Write/Update waiver text -> https://us.bikerentalmanager.com/app/settings/general/store-details
+- Activate signature requirement: on the 'confirmation' email https://us.bikerentalmanager.com/app/settings/notifications/what -> check the signature and online signing here
+
+
 
 
 Meeting Notes 4/11/2025
@@ -136,4 +147,5 @@ OK, for non cc payments on Stripe:
 Payment type - pre-auth i.e. value of bicycle or part More so on Road Bike Rentals, couldn't think of fair price. Most shops hold $100-200 per bike. What is the deducatable
   Hold auto releases after 7 days. Or you clease on x to release funds
   Hit capture button to capture.  or edit
+
 

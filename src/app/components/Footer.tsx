@@ -153,6 +153,13 @@ const Footer: React.FC = () => {
           <KayakBadge />
         </div>
       </div>
+
+            {/* Copyright */}
+            <div className="mt-10 text-center text-xs text-gray-300">
+        &copy; {new Date().getFullYear()} Waterfront Bicycle Shop, 391 West Street NY, NY 10014<br />
+        All Rights Reserved
+      </div>
+      
     </footer>
   );
 };

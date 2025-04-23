@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+## Deploying site
+1. Test out on Netlify
+2. For Production, trying Vercel and a Pro Account.
+3. Sign up with email
+4. 
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
