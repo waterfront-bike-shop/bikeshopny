@@ -11,15 +11,15 @@ const AboutPage: FC = () => {
             About Waterfront Bike Shop
           </h1>
           <p>
-            Come explore the Hudson River Park and beyond. We have over 100
-            quality hybrid bicycles for rent. We also offer tune-ups, repairs,
-            parts, and accessories.
+            We offer recreational bikes and road bikes for rent on the 13-mile Hudson River / Manhattan Waterfront. 
+            This is the beginning of the 750-mile Empire State Trial to upstate NY as well as the road bike route that goes through NYC and over the George Washington Bridge to New Jersey. 
+            We also offer repairs and 1000's of parts and accessories.
           </p>
           <p className="mt-4">
             Open since 2009 in New York City&apos;s West Village.
           </p>
 
-          <h1 className="text-2xl mb-2 mt-4 font-bold">Summer Hours</h1>
+          <h1 className="text-2xl mb-2 mt-4 font-bold">Hours</h1>
           <p>Monday - Sunday 10:00 am - 7:00 pm</p>
 
           {/* Map Section */}
