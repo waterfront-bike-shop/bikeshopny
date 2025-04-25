@@ -66,7 +66,7 @@ export default function BikeCards() {
                   src={bike.image}
                   alt={bike.alt}
                   fill
-                  className="object-contain"
+                  className="object-contain rounded-xl"
                 />
               </div>
               <h3 className="text-lg font-semibold mb-2">{bike.title}</h3>
@@ -85,7 +85,7 @@ export default function BikeCards() {
               </a>
               {/* Only show on mobile (sm and below) */}
               <a href={sms} className="block sm:hidden">
-                <Button className="w-full border border-blue-800 text-blue-800 hover:bg-blue-100">
+                <Button className="bg-sky-800 text-white w-full hover:bg-sky-900">
                   Text to Reserve
                 </Button>
               </a>
