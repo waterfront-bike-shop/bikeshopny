@@ -16,9 +16,9 @@ const FiveBoroRentals: React.FC = () => {
           <h1 className="text-3xl font-semibold mb-4">
             5 Boro Bike Tour 2025 Rental
           </h1>
-          <h2 className="text-xl font-medium mb-4">Sat 3 May 2025</h2>
+          <h2 className="text-xl font-medium mb-4">Sun 4 May 2025</h2>
           <p className="mb-4">
-            Rent a bicycle for the 5 Boro Bike Tour on May 4, 2025.
+            Rent a bicycle for the 5 Boro Bike Tour.
           </p>
           <p className="mb-4">
             $99 per bike for Sat May 03, and Sun May 04, two-day minimum.
