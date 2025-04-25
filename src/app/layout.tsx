@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     ],
     creator: '@bikeshopny', 
   },
-  themeColor: '#0075c1',
+
   icons: [
     {
       rel: 'icon',

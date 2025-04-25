@@ -13,7 +13,7 @@ const AboutPage: FC = () => {
           <p>
             We offer recreational bikes and road bikes for rent on the 13-mile Hudson River / Manhattan Waterfront. 
             This is the beginning of the 750-mile Empire State Trial to upstate NY as well as the road bike route that goes through NYC and over the George Washington Bridge to New Jersey. 
-            We also offer repairs and 1000's of parts and accessories.
+            We also offer repairs and 1000s of parts and accessories.
           </p>
           <p className="mt-4">
             Open since 2009 in New York City&apos;s West Village.

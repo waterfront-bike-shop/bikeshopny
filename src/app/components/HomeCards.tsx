@@ -14,7 +14,7 @@ export default function HomeCards() {
         <div>
           <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
             <Image
-              src="/images/repair_service.jpg"
+              src="/images/repair-service-parts.jpg"
               alt="Repair"
               fill
               className="object-contain"
@@ -22,6 +22,11 @@ export default function HomeCards() {
           </div>
           <h3 className="text-lg font-semibold mb-2">Repairs</h3>
           <p>On the spot repairs and tune- ups available.</p>
+
+          <p className="mt-2">
+            We keep 1000+ Parts & Accessories in stock at all times for the
+            spur-of-the-moment upgrade or repair.
+          </p>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
           Repairs
@@ -39,7 +44,9 @@ export default function HomeCards() {
               className="object-contain"
             />
           </div>
-          <h3 className="text-lg font-semibold mb-2">24 Speed City Bike</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            Rent a 24 Speed City Bike
+          </h3>
           <p>
             40 available. Includes basket, helmet, and lock. Medium, Large, and
             XL sizes.
@@ -51,7 +58,8 @@ export default function HomeCards() {
           </ul>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
-          Online Rentals by the day
+          {/* Online Rentals by the day */}
+          Rent
         </Button>
       </Link>
 
@@ -66,7 +74,9 @@ export default function HomeCards() {
               className="object-contain"
             />
           </div>
-          <h3 className="text-lg font-semibold mb-2">7 Speed Step-Through</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            Rent a 7 Speed Step-Through Bike
+          </h3>
           <p>
             Sizes: Small (up to 5&apos;8&quot;), Large (up to 5&apos;10&quot;).
           </p>
@@ -77,11 +87,37 @@ export default function HomeCards() {
           </ul>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
-          Online Rentals by the day
+          {/* Online Rentals by the day */}
+          Rent
         </Button>
       </Link>
 
-      {/* Parts & Accessories */}
+      {/* Rental Card 3 */}
+      <Link href="/rentals" className={cardStyle}>
+        <div>
+          <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
+            <Image
+              src="/images/specialized-roubaix-sport-2019.webp"
+              alt="Road bike"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <h3 className="text-lg font-semibold mb-2">Rent a Road Bike</h3>
+          <p>Sizes: 56cm, 54cm and 52cm</p>
+          <ul className="text-sm mt-2">
+            <li>Day rate (10am–7pm):</li>
+            <li>$65 Aluminum + Steel</li>
+            <li>$100 Carbon</li>
+          </ul>
+        </div>
+        <Button variant="default" className="mt-4 bg-blue-800 text-white">
+          {/* Online Rentals by the day */}
+          Rent
+        </Button>
+      </Link>
+
+      {/* Parts & Accessories
       <Link href="/shop" className={cardStyle}>
         <div>
           <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
@@ -103,7 +139,7 @@ export default function HomeCards() {
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
           Parts & Accessories
         </Button>
-      </Link>
+      </Link> */}
     </section>
   );
 }

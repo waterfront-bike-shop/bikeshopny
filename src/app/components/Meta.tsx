@@ -48,8 +48,6 @@ const Meta = () => {
       />
       <meta name="twitter:image:alt" content="Waterfront Bicycle Shop Bike Rental / Repair NYC" />
 
-      {/* Theme Color */}
-      <meta name="theme-color" content="rgb(0, 117, 193)" />
     </Head>
   );
 };
