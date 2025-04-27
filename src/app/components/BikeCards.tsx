@@ -54,9 +54,7 @@ export default function BikeCards() {
         const mailto = `mailto:waterfrontbikeshop@gmail.com?subject=Rental: ${encodeURIComponent(
           bike.title
         )}`;
-        const sms = `sms:12124142453?body=I'm interested in renting a ${encodeURIComponent(
-          bike.title
-        )}`;
+
 
         return (
           <div key={index} className={cardStyle}>
