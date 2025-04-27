@@ -6,12 +6,12 @@ import Hero from "../components/Hero";
 import BikeCards from "../components/BikeCards";
 
 const Rentals: React.FC = () => {
-  const [mode, setMode] = useState<"online" | "inStore">("online");
+  const [mode, setMode] = useState<"online" | "inStore">("inStore");
 
   return (
     <div className="w-full min-h-screen bg-white">
       {/* Toggle buttons */}
-      <div className="flex justify-center space-x-4 py-6">
+      <div className="flex justify-center space-x-4 py-3">
         <button
           onClick={() => setMode("online")}
           className={`px-4 py-2 rounded ${
@@ -20,7 +20,7 @@ const Rentals: React.FC = () => {
               : "bg-gray-200 text-gray-800"
           }`}
         >
-          Online Booking
+          Online Booking (Coming Soon)
         </button>
         <button
           onClick={() => setMode("inStore")}
@@ -38,12 +38,13 @@ const Rentals: React.FC = () => {
       <div>
         {mode === "online" ? (
           <div className="w-full min-h-screen flex justify-center items-center">
-            <iframe
+            {/* <iframe
               src="https://us.booking.bike.rent/book?store=waterfrontbicycleshop"
               title="Waterfront Bicycle Rentals"
               className="w-full h-[100vh] border-0"
               allowFullScreen
-            ></iframe>
+            ></iframe> */}
+            <h1 className="text-6xl">Online Booking Coming Soon!</h1> {/* Delete this when online booking back up! */}
           </div>
         ) : (
           <>
@@ -51,7 +52,7 @@ const Rentals: React.FC = () => {
               headline="Waterfront Bicycle Rentals"
               image="/images/hudson_river_aerial_view.jpg"
               subheadings={[
-                "Rent bikes in store, by text or by email.",
+                "Rent bikes in store, by phone or by email.",
               ]}
             />
             <section className="py-10">
@@ -75,7 +76,7 @@ const Rentals: React.FC = () => {
                   </p>
                   <p className="text-gray-700">Rentals include helmets and locks.</p>
                   <p className="text-sm text-gray-500">
-                    Online booking currently unavailable — check back soon!
+                    {/* Online booking currently unavailable — check back soon! */}
                   </p>
                 </div>
 
@@ -97,7 +98,7 @@ const Rentals: React.FC = () => {
                 headline="Waterfront Bicycle Rentals"
                 image="/images/hudson_river_aerial_view.jpg"
                 subheadings={[
-                  "Rent bikes in store, by text or by email."
+                  "Rent bikes in store, by phone or by email."
                 ]}
               />
               <section>

@@ -83,12 +83,6 @@ export default function BikeCards() {
                   Email to Reserve
                 </Button>
               </a>
-              {/* Only show on mobile (sm and below) */}
-              <a href={sms} className="block sm:hidden">
-                <Button className="bg-sky-800 text-white w-full hover:bg-sky-900">
-                  Text to Reserve
-                </Button>
-              </a>
             </div>
           </div>
         );
