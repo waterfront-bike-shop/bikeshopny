@@ -6,7 +6,7 @@ import Hero from "../components/Hero";
 import BikeCards from "../components/BikeCards";
 
 const Rentals: React.FC = () => {
-  const [mode, setMode] = useState<"online" | "inStore">("inStore");
+  const [mode, setMode] = useState<"online" | "inStore">("online");
 
   return (
     <div className="w-full min-h-screen bg-white">
@@ -20,7 +20,7 @@ const Rentals: React.FC = () => {
               : "bg-gray-200 text-gray-800"
           }`}
         >
-          Online Booking (Coming Soon)
+          Online Booking
         </button>
         <button
           onClick={() => setMode("inStore")}
@@ -38,13 +38,13 @@ const Rentals: React.FC = () => {
       <div>
         {mode === "online" ? (
           <div className="w-full min-h-screen flex justify-center items-center">
-            {/* <iframe
+            <iframe
               src="https://us.booking.bike.rent/book?store=waterfrontbicycleshop"
               title="Waterfront Bicycle Rentals"
               className="w-full h-[100vh] border-0"
               allowFullScreen
-            ></iframe> */}
-            <h1 className="text-6xl">Online Booking Coming Soon!</h1> {/* Delete this when online booking back up! */}
+            ></iframe>
+            {/*<h1 className="text-6xl">Online Booking Coming Soon!</h1> {/* Delete this when online booking back up! */}
           </div>
         ) : (
           <>
