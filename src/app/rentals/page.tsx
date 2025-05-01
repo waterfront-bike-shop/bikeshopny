@@ -33,6 +33,10 @@ const Rentals: React.FC = () => {
           In Store Rental
         </button>
       </div>
+      <div>
+
+      <h3 className="text-center border border-gray-800 rounded m-3">Note: For same-day booking call the store at 212-414-2453 to reserve a bike, online-booking ends the previous day. </h3>
+      </div>
 
       {/* Content rendering */}
       <div>
@@ -41,7 +45,7 @@ const Rentals: React.FC = () => {
             <iframe
               src="https://us.booking.bike.rent/book?store=waterfrontbicycleshop"
               title="Waterfront Bicycle Rentals"
-              className="w-full h-[100vh] border-0"
+              className="w-full h-[150vh] border-0"
               allowFullScreen
             ></iframe>
             {/*<h1 className="text-6xl">Online Booking Coming Soon!</h1> {/* Delete this when online booking back up! */}
@@ -109,7 +113,7 @@ const Rentals: React.FC = () => {
             <iframe
               src="https://us.booking.bike.rent/book?store=waterfrontbicycleshop"
               title="Waterfront Bicycle Rentals"
-              className="w-full h-[100vh] border-0"
+              className="w-full h-[150vh] border-0"
               allowFullScreen
             ></iframe>
           )}
