@@ -67,12 +67,12 @@ const Header = () => {
                   key={link.name}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="text-lg text-gray-800 hover:text-gray-900"
+                  className="text-lg text-gray-800 hover:text-gray-900 pl-4"
                 >
                   {link.name}
                 </Link>
               ))}
-              <Link href="/five-boro-rentals" passHref>
+              <Link className="pl-2" href="/five-boro-rentals" passHref>
                 <Button
                   className="mt-4 bg-red-500 text-white hover:bg-red-600"
                   onClick={() => setOpen(false)}
