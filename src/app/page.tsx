@@ -15,7 +15,7 @@ const HomePage: FC = () => {
         ]}
         href="/five-boro-rentals"
         // button_text="Book your 5 Boro Bicycle Rental"
-        button_text="Book by May 3 at 5pm"
+        button_text="Book by May 3 at 5pm (Pickup by 6:45pm)"
         image="/images/5-boro-riders.jpg"
       />
       <HomeCards />
