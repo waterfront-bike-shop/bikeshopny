@@ -10,13 +10,19 @@ const HomePage: FC = () => {
       {/* DEFAULT Header                 */}
       {/* /////////////////////////////  */}
 
-      {/* <Hero headline="Welcome to the best Bike Shop on the Hudson River!" href="/rentals" button_text="Rent a bike online" image="/images/hudson_river_aerial_view.jpg"/> */}
-
-      {/* /////////////////////////////  */}
-      {/* In between                     */}
-      {/* /////////////////////////////  */}
-
       <Hero
+        headline="Welcome to NYC's Bike Shop on the Hudson River!"
+        subheadings={["Rentals, Repairs and Parts & Accessories."]}
+        href="/rentals"
+        button_text="Rent a bike online"
+        image="/images/hudson_river_aerial_view.jpg"
+      />
+
+      {/* /////////////////////////////      */}
+      {/* Day of 5 Boro promoting Road Bikes */}
+      {/* /////////////////////////////      */}
+
+      {/* <Hero
         headline="Road Bike Rentals available for Sunday, May 4, 2025:"
         subheadings={[
           "One BMC and Two Specialized Roubaix's Available!"
@@ -24,7 +30,7 @@ const HomePage: FC = () => {
         href="/rentals"
         button_text="Rent a road bike"
         image="/images/hudson_river_aerial_view.jpg"
-      />
+      /> */}
 
       {/* /////////////////////////////  */}
       {/* Hero for the 5 Boro Bike Tour  */}
