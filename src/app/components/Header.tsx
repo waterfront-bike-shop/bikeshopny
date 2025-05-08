@@ -45,9 +45,9 @@ const Header = () => {
             {link.name}
           </Link>
         ))}
-        <Link href="/five-boro-rentals" passHref>
+        <Link href="/rentals" passHref>
           <Button className="bg-red-500 text-white hover:bg-red-600">
-            5 Boro Bike Rental
+            Rent a Bike
           </Button>
         </Link>
       </nav>
@@ -72,12 +72,12 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              <Link className="pl-2" href="/five-boro-rentals" passHref>
+              <Link className="pl-2" href="/rentals" passHref>
                 <Button
                   className="mt-4 bg-red-500 text-white hover:bg-red-600"
                   onClick={() => setOpen(false)}
                 >
-                  5 Boro Bike Rental
+                  Rent a Bike
                 </Button>
               </Link>
             </div>
