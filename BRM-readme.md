@@ -168,3 +168,10 @@ Payment type - pre-auth i.e. value of bicycle or part More so on Road Bike Renta
   Hit capture button to capture.  or edit
 
 
+## 5 Boro Bike Tour confirmation:
+FOR 5 BORO BIKE TOUR 2025 RENTALS
+Bicycle Pickup: Saturday, May 3, 10:00 AM - 6:45 PM
+Bicycle Return: Sunday May 4 by 6:45 PM. Shop closes at 7 PM*
+
+* Contact us if running late at 212 414 2453.
+* Late returns billed an extra day ($35) and must be brought back to the shop at 10am when we open on Monday, May 5, unless otherwise arranged in advance by calling the number 212 414 2453 or emailing  waterfrontbikeshop@gmail.com

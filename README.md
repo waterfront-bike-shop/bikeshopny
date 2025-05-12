@@ -19,9 +19,10 @@
     - Create an app/sitemap.xml folder with route.ts -- So it becomes available at https://yoursite.com/sitemap.xml — which is what search engines expect.
      - `mkdir -p app/sitemap.xml`
      - `mv app/sitemap.ts app/sitemap.xml/route.ts`
-  2. Add Dynamic Routes (when they exist!)
-  3. Optional: Add changefreq and priority (for SEO hints)
-  4. 
+   - Add Dynamic Routes (when they exist!)
+   - Optional: Add changefreq and priority (for SEO hints)
+  2. Add some JSON and aria tags onto rentals
+  3. Add sitemap to Google Search Console.
 
 
 
