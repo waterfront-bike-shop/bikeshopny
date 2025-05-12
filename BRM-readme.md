@@ -57,6 +57,9 @@ You Copy & Paste your T&C's here:
 settings > Customer Booking (Online) > Terms
 
 
+
+
+
 Meeting Notes 4/11/2025
 
 My Questions
