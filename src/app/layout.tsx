@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Script from "next/script";
 import ClientAnalytics from "./components/ClientAnalytics"; // import ClientAnalytics component
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next" // Vercel's analytics
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -73,6 +74,7 @@ export default function RootLayout({
         {/* ClientAnalytics component to track route changes */}
         {children}
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
