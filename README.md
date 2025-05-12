@@ -12,9 +12,29 @@
 4. 
 
 
+## Site SEO Optimization
+- Issue: SEO has dropped since changing the site from GoDaddy site buil📚 der to Next.JS hosted on Vercel.
+- Steps/Attempts to fix...
+  1. Generate a Sitemap, Next style.
+    - Create an app/sitemap.xml folder with route.ts -- So it becomes available at https://yoursite.com/sitemap.xml — which is what search engines expect.
+     - `mkdir -p app/sitemap.xml`
+     - `mv app/sitemap.ts app/sitemap.xml/route.ts`
+  2. Add Dynamic Routes (when they exist!)
+  3. Optional: Add changefreq and priority (for SEO hints)
+  4. 
 
 
 
+
+
+
+
+-------------------------------------------------------
+-----------------------------------
+---------------------
+-----------
+----
+-
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
