@@ -3,16 +3,19 @@ import { SitemapStream, streamToPromise } from "sitemap";
 import { Readable } from "stream";
 
 export async function GET() {
+  // Get the current date in the format YYYY-MM-DD
+  const currentDate = new Date().toISOString().split('T')[0];
+
   const links = [
-    { url: '/', changefreq: 'daily', priority: 1.0 },
-    { url: '/about', changefreq: 'weekly', priority: 0.8 },
-    { url: '/contact', changefreq: 'weekly', priority: 0.5 },
-    { url: '/rentals', changefreq: 'weekly', priority: 0.5 },
-    { url: '/rentals/roadbikes', changefreq: 'weekly', priority: 0.5 },
-    { url: '/rentals/kidsbikes', changefreq: 'weekly', priority: 0.5 },
-    { url: '/rentals/citybikes', changefreq: 'weekly', priority: 0.5 },
-    { url: '/shop', changefreq: 'weekly', priority: 0.5 },
-    { url: '/repairs', changefreq: 'weekly', priority: 0.5 },
+    { url: '/', changefreq: 'daily', priority: 1.0, lastmod: currentDate },
+    { url: '/about', changefreq: 'weekly', priority: 0.8, lastmod: currentDate },
+    { url: '/contact', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/rentals', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/rentals/roadbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/rentals/kidsbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/rentals/citybikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/shop', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    { url: '/repairs', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     // Add dynamic links logic here if needed
   ];
 
