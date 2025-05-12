@@ -102,14 +102,14 @@ const Rentals: React.FC = () => {
       {showAlert && (
         <div className="bg-red-600 text-white p-4 flex items-center space-x-4">
           <img
-            src="https://nyc.gfny.com/logo.png"
+            src="https://nyc.gfny.com/wp-content/uploads/sites/8/2023/09/GFNY-Worlds_Michelob-02.png"
             alt="GFNY"
             className="w-10 h-10 object-cover"
           />
           <div className="flex-1">
             <h4 className="font-semibold">GFNY Bike Rental Alert</h4>
             <p>Rent a road bike for the May 18 GFNY World Championship NYC ride. Rent for May 18 and pickup the night before (between 6-7 PM) at the shop, return by 6:45 PM after the race.</p>
-            <a href="https://nyc.gfny.com/" className="text-yellow-400 underline">
+            <a href="https://nyc.gfny.com/" className="text-lime-400 underline">
               Learn More
             </a>
           </div>
