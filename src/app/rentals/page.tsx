@@ -180,6 +180,7 @@ const Rentals: React.FC = () => {
                     <p className="text-gray-700">Rentals include helmets and locks.</p>
                   </div>
                 </div>
+                <BikeCards />
               </section>
             </>
           )}
