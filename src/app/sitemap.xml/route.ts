@@ -20,7 +20,7 @@ export async function GET() {
   ];
 
   // Create the sitemap stream
-  const stream = new SitemapStream({ hostname: 'https://www.bikerentalny.com' });
+  const stream = new SitemapStream({ hostname: 'https://www.bikeshopny.com' });
   const xml = await streamToPromise(Readable.from(links).pipe(stream)).then((data) => data.toString());
 
   // Use new Response to send plain XML response with correct header
