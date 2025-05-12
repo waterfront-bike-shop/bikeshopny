@@ -1,8 +1,8 @@
-import { GetServerSideProps } from 'next';
-import { SitemapStream, streamToPromise } from 'sitemap';
-import { Readable } from 'stream';
+import { NextResponse } from "next/server";
+import { SitemapStream, streamToPromise } from "sitemap";
+import { Readable } from "stream";
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export async function GET() {
   const links = [
     { url: '/', changefreq: 'daily', priority: 1.0 },
     { url: '/about', changefreq: 'weekly', priority: 0.8 },
@@ -13,25 +13,16 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     { url: '/rentals/citybikes', changefreq: 'weekly', priority: 0.5 },
     { url: '/shop', changefreq: 'weekly', priority: 0.5 },
     { url: '/repairs', changefreq: 'weekly', priority: 0.5 },
-    // Switch to monthly once Develpment is complete
+    // Add dynamic links logic here if needed
   ];
 
-  // LOGIC FOR DYNAMIC LINKS WHEN USED
-  /////////////////// TK ////////
-
+  // Create the sitemap stream
   const stream = new SitemapStream({ hostname: 'https://www.bikerentalny.com' });
   const xml = await streamToPromise(Readable.from(links).pipe(stream)).then((data) => data.toString());
 
-  res.setHeader('Content-Type', 'application/xml');
-  res.write(xml);
-  res.end();
-
-  return {
-    props: {},
-  };
-};
-
-// // Doesn't render so you don;t need it, I think...
-// export default function Sitemap() {
-//   return null;
-// }
+  // Use new Response to send plain XML response with correct header
+  return new NextResponse(xml, {
+    status: 200,
+    headers: { 'Content-Type': 'application/xml' },
+  });
+}
