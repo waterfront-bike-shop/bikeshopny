@@ -149,7 +149,7 @@ const Rentals: React.FC = () => {
           {mode === "online" ? (
             <div className="w-full min-h-screen flex justify-center items-center">
               <iframe
-                src="https://us.booking.bike.rent/book?store=waterfrontbicycleshop"
+                src="https://us.bikerentalmanager.com/book.html?shop=waterfrontbicycleshop"
                 title="Waterfront Bicycle Rentals"
                 className="w-full h-[150vh] border-0"
                 allowFullScreen
