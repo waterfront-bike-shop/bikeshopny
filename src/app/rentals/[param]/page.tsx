@@ -12,7 +12,7 @@ const paramUrlDict = [
   },
   {
     param: "roadbike",
-    brm_url: "https://us.booking.bike.rent/book?store=waterfrontbicycleshop&categories=1744660467608",
+    brm_url: "https://us.bikerentalmanager.com/book.html?shop=waterfrontbicycleshop&categories=1744660467608",
   },
   { param: "kidsbikes", brm_url: "https://us.booking.bike.rent/book?store=waterfrontbicycleshop&categories=1745418386377" },
   { param: "kidsbike", brm_url: "https://us.booking.bike.rent/book?store=waterfrontbicycleshop&categories=1745418386377" },
@@ -56,6 +56,11 @@ export default function RentalsPage() {
       <div>
         <h3 className="text-center border border-gray-800 rounded m-3">
           Note: For same-day booking call the store at 212-414-2453 to reserve a bike. Online booking ends the previous day.
+        </h3>
+      </div>
+      <div>
+        <h3 className="text-center border bg-lime-300 border-gray-800 rounded m-3">
+          Booking a road bike for the GFNY Ride on May 18? Book for the 18th and pickup 6-7pm the day before.
         </h3>
       </div>
 
