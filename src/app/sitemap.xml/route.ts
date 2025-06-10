@@ -9,7 +9,6 @@ export async function GET() {
   const links = [
     { url: '/', changefreq: 'daily', priority: 1.0, lastmod: currentDate },
     { url: '/about', changefreq: 'weekly', priority: 0.8, lastmod: currentDate },
-    { url: '/contact', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     { url: '/rentals', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     // Remove links below because of 'Duplicate without user-selected canonical' error with Google Search Console, i.e. similar content!
     // { url: '/rentals/roadbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
