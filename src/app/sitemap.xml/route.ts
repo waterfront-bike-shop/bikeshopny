@@ -11,9 +11,10 @@ export async function GET() {
     { url: '/about', changefreq: 'weekly', priority: 0.8, lastmod: currentDate },
     { url: '/contact', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     { url: '/rentals', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
-    { url: '/rentals/roadbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
-    { url: '/rentals/kidsbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
-    { url: '/rentals/citybikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    // Remove links below because of 'Duplicate without user-selected canonical' error with Google Search Console, i.e. similar content!
+    // { url: '/rentals/roadbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    // { url: '/rentals/kidsbikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
+    // { url: '/rentals/citybikes', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     { url: '/shop', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     { url: '/repairs', changefreq: 'weekly', priority: 0.5, lastmod: currentDate },
     // Add dynamic links logic here if needed

@@ -1,7 +1,6 @@
-import { Metadata } from 'next';
-import RentalsClient from './RentalsClient';
+// Rental Data to be appended to the page's metadata to help explain what is in the iFrame from Bike Rental Manager.
 
-const rentalData = {
+export const rentalData = {
   "@context": "https://schema.org",
   "@type": "BicycleRental",
   name: "Waterfront Bicycle Shop - Rentals",
@@ -47,25 +46,3 @@ const rentalData = {
     },
   ],
 };
-
-export const metadata: Metadata = {
-  title: 'Bike Rentals - Online Booking',
-  description: 'Rent bikes online or in-store at Waterfront Bicycle Shop, NYC.',
-  alternates: {
-    canonical: 'https://www.bikeshopny.com/rentals',
-  },
-};
-
-export default function Rentals() {
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(rentalData),
-        }}
-      />
-      <RentalsClient />
-    </>
-  );
-}
