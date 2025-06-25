@@ -93,7 +93,7 @@ export default function HomeCards() {
       </Link>
 
       {/* Rental Card 3 */}
-      <Link href="/rentals" className={cardStyle}>
+      <Link href="/rentals/roadbike" className={cardStyle}>
         <div>
           <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
             <Image
