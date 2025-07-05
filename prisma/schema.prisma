@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin User Authentication
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique @db.VarChar(40)
+  firstName  String   @map("first_name") @db.VarChar(50)
+  lastName   String   @map("last_name") @db.VarChar(50)
+  email      String   @unique @db.VarChar(100)
+  password   String   @db.VarChar(255) // Increased for hashed passwords
+  isAdmin    Boolean  @default(false) @map("admin")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now()) @map("date_added")
+  updatedAt  DateTime @updatedAt @map("date_updated")
+  lastLogin  DateTime? @map("last_login")
+  lightspeedIntegration LightspeedIntegration?
+
+  // Relations
+  sessions   Session[]
+  pages      Page[]
+  cards      Card[]
+
+  @@map("users")
+}
+
+// Session management for better security
+model Session {
+  id        String   @id @default(cuid())
+  userId    Int      @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// Lightspeed API Configuration
+model LightspeedApi {
+  id           Int      @id @default(autoincrement())
+  accountId    Int?     @map("account_id")
+  accessToken  String   @map("access_token") @db.Text
+  refreshToken String   @map("refresh_token") @db.Text
+  tokenType    String   @default("Bearer") @map("token_type")
+  expiresIn    Int      @map("expires_in") // seconds
+  createdAt    DateTime @default(now()) @map("timestamp")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  isActive     Boolean  @default(true) @map("is_active")
+
+  @@map("lightspeed_api")
+}
+
+model LightspeedIntegration {
+  id           String   @id @default(cuid())
+  userId       Int   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime
+  accountId    String
+  isActive     Boolean  @default(true)
+  lastSyncAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("lightspeed_integrations")
+}
+
+// Local cache for Lightspeed items
+model Item {
+  id              Int      @id @default(autoincrement())
+  lightspeedId    Int      @unique @map("lightspeed_id")
+  description     String   @db.Text
+  categoryId      Int?     @map("category_id")
+  defaultCost     Decimal? @map("default_cost") @db.Decimal(10, 2)
+  avgCost         Decimal? @map("avg_cost") @db.Decimal(10, 2)
+  discountPercent Decimal? @map("discount_percent") @db.Decimal(5, 2)
+  tax             Boolean  @default(false)
+  archived        Boolean  @default(false)
+  itemMatrix      Boolean  @default(false) @map("item_matrix")
+  serialized      Boolean  @default(false)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  lastSyncAt      DateTime @default(now()) @map("last_sync_at")
+
+  // Relations
+  images ItemImage[]
+  prices ItemPrice[]
+
+  @@map("items")
+}
+
+// Item pricing information
+model ItemPrice {
+  id       Int     @id @default(autoincrement())
+  itemId   Int     @map("item_id")
+  amount   Decimal @db.Decimal(10, 2)
+  useType  String  @map("use_type") @db.VarChar(50) // e.g., "Default", "MSRP", "Online"
+  useTypeId Int    @map("use_type_id")
+
+  // Relations
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("item_prices")
+}
+
+// Images for items and general use
+model Image {
+  id          Int      @id @default(autoincrement())
+  filename    String   @db.VarChar(255)
+  originalName String? @map("original_name") @db.VarChar(255)
+  mimeType    String   @map("mime_type") @db.VarChar(100)
+  size        Int      // bytes
+  width       Int?
+  height      Int?
+  url         String   @db.Text // Vercel Blob URL
+  altText     String?  @map("alt_text") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  itemImages ItemImage[]
+  cardImages CardImage[]
+  pageImages PageImage[]
+
+  @@map("images")
+}
+
+// Junction table for item images
+model ItemImage {
+  id       Int    @id @default(autoincrement())
+  itemId   Int    @map("item_id")
+  imageId  Int    @map("image_id")
+  isPrimary Boolean @default(false) @map("is_primary")
+  sortOrder Int   @default(0) @map("sort_order")
+
+  // Relations
+  item  Item  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, imageId])
+  @@map("item_images")
+}
+
+// CMS Pages
+model Page {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(200)
+  slug        String   @unique @db.VarChar(100)
+  content     String   @db.Text // Markdown content
+  metaTitle   String?  @map("meta_title") @db.VarChar(200)
+  metaDescription String? @map("meta_description") @db.Text
+  isPublished Boolean  @default(false) @map("is_published")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  authorId    Int      @map("author_id")
+
+  // Relations
+  author User @relation(fields: [authorId], references: [id])
+  images PageImage[]
+
+  @@map("pages")
+}
+
+// Junction table for page images
+model PageImage {
+  id      Int @id @default(autoincrement())
+  pageId  Int @map("page_id")
+  imageId Int @map("image_id")
+  sortOrder Int @default(0) @map("sort_order")
+
+  // Relations
+  page  Page  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, imageId])
+  @@map("page_images")
+}
+
+// CMS Cards/Content blocks
+model Card {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(200)
+  content     String   @db.Text // Markdown content
+  cardType    String   @map("card_type") @db.VarChar(50) // e.g., "hero", "feature", "testimonial"
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  location    String?  @db.VarChar(100) // Where to display (homepage, about, etc.)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  authorId    Int      @map("author_id")
+
+  // Relations
+  author User @relation(fields: [authorId], references: [id])
+  images CardImage[]
+
+  @@map("cards")
+}
+
+// Junction table for card images
+model CardImage {
+  id      Int @id @default(autoincrement())
+  cardId  Int @map("card_id")
+  imageId Int @map("image_id")
+  sortOrder Int @default(0) @map("sort_order")
+
+  // Relations
+  card  Card  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, imageId])
+  @@map("card_images")
+}

@@ -47,3 +47,4 @@ next-env.d.ts
 /BRM-scraper
 py_util/BRM-scraper/
 .readme*
+/src/generated/prisma

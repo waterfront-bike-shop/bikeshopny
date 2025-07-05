@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
       client_secret: process.env.LIGHTSPEED_CLIENT_SECRET,
       grant_type: 'authorization_code',
       code: code,
+      
     }),
   });
 
