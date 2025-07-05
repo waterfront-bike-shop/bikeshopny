@@ -1,10 +1,13 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
+import { StringValue } from 'ms';  // <-- import this for correct expiresIn typing
 
 // Ensure JWT_SECRET is defined and typed correctly
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
+const jwt_secret = process.env.JWT_SECRET;
+if (!jwt_secret) {
   throw new Error('JWT_SECRET environment variable is required');
 }
+
+const JWT_SECRET: string = jwt_secret;
 
 export interface JwtPayload {
   sub: string; // user id
@@ -16,21 +19,18 @@ export interface JwtPayload {
 
 export function signJWT(
   payload: JwtPayload,
-  expiresIn: string | number = '7d'
+  expiresIn: StringValue | number = '7d'  // <-- use StringValue | number here
 ): string {
-  console.log("signJWT running")
-  const options: SignOptions = { 
-    expiresIn: expiresIn as any // Cast to any to bypass the StringValue type issue
-  };
-  return jwt.sign(payload, JWT_SECRET as string, options);
+  console.log("signJWT running");
+  const options: SignOptions = { expiresIn };
+  return jwt.sign(payload, JWT_SECRET, options);
 }
 
 export function verifyJWT(token: string): JwtPayload | null {
   try {
-    console.log("veriftJWT running")
-    const decoded = jwt.verify(token, JWT_SECRET as string);
+    console.log("verifyJWT running");
+    const decoded = jwt.verify(token, JWT_SECRET);
     
-    // Type guard to ensure the decoded token has the expected shape
     if (
       typeof decoded === 'object' && 
       decoded !== null && 
@@ -40,7 +40,6 @@ export function verifyJWT(token: string): JwtPayload | null {
     ) {
       return decoded as JwtPayload;
     }
-    
     return null;
   } catch {
     return null;
