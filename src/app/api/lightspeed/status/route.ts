@@ -6,48 +6,47 @@ import { prisma } from '@/lib/prisma';
 export async function GET(request: NextRequest) {
   try {
     // Verify user is authenticated
-    const token = request.headers.get('authorization')?.replace('Bearer ', '') || 
-                 request.cookies.get('auth-token')?.value;
-
-    if (!token) {
+    const cookieHeader = request.headers.get('cookie');
+    if (!cookieHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const tokenMatch = cookieHeader.match(/token=([^;]+)/);
+    if (!tokenMatch) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const token = tokenMatch[1];
     const payload = verifyJWT(token);
     if (!payload) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Check if user has Lightspeed integration
-    const lightspeedIntegration = await prisma.lightspeedIntegration.findUnique({
-      where: { userId: parseInt(payload.sub) },
-      select: {
-        id: true,
-        accountId: true,
+    // Check if user has a Lightspeed connection
+    const connection = await prisma.lightspeedConnection.findUnique({
+      where: { 
+        userId: parseInt(payload.sub),
         isActive: true,
-        lastSyncAt: true,
-        createdAt: true,
-      }
+      },
     });
 
-    if (!lightspeedIntegration) {
+    if (!connection) {
       return NextResponse.json({
         isConnected: false,
-        lastSync: null,
-        accountId: null,
       });
     }
 
-    // Check if token is still valid (basic check)
-    const isConnected = lightspeedIntegration.isActive;
-
+    // Check if token is still valid (not expired)
+    const isExpired = connection.expiresAt < new Date();
+    
     return NextResponse.json({
-      isConnected,
-      lastSync: lightspeedIntegration.lastSyncAt,
-      accountId: lightspeedIntegration.accountId,
+      isConnected: !isExpired,
+      lastSync: connection.lastSync?.toISOString(),
+      accountId: connection.accountId,
     });
+
   } catch (error) {
-    console.error('Error checking Lightspeed status:', error);
+    console.error('Status check error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

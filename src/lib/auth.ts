@@ -1,5 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { StringValue } from 'ms';  // <-- import this for correct expiresIn typing
+import { StringValue } from 'ms';  // <-- import this for correct expiresIn typing sting + num
 
 // Ensure JWT_SECRET is defined and typed correctly
 const jwt_secret = process.env.JWT_SECRET;

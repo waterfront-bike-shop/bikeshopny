@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -12,7 +12,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, XCircle, ExternalLink, User, Settings, Package } from "lucide-react";
+import {
+  CheckCircle,
+  XCircle,
+  ExternalLink,
+  User,
+  Settings,
+  Package,
+} from "lucide-react";
 
 interface User {
   id: string;
@@ -31,82 +38,121 @@ interface LightspeedConnection {
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [lightspeedStatus, setLightspeedStatus] = useState<LightspeedConnection>({
-    isConnected: false
-  });
+  const [lightspeedStatus, setLightspeedStatus] =
+    useState<LightspeedConnection>({
+      isConnected: false,
+    });
   const [loading, setLoading] = useState(true);
   const [connectingToLightspeed, setConnectingToLightspeed] = useState(false);
+  const [oauthMessage, setOauthMessage] = useState<
+    { type: "success" | "error"; text: string } | null
+  >(null);
 
   useEffect(() => {
     checkAuthStatus();
     checkLightspeedStatus();
   }, []);
 
+  // Handle OAuth callback success/error messages
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success");
+    const error = urlParams.get("error");
 
-const checkAuthStatus = async () => {
-  try {
-    const res = await fetch('/api/auth/me', {
-      credentials: 'include' // Make sure cookies are sent
-    });
-    if (!res.ok) {
-      if (res.status === 401) {
-        console.log('User not authenticated, redirecting to login');
-        router.push('/login');
-        return;
-      }
-      throw new Error(`HTTP error! status: ${res.status}`);
+    if (success === "lightspeed_connected") {
+      setOauthMessage({ type: "success", text: "Lightspeed connected successfully!" });
+      checkLightspeedStatus();
+    } else if (error) {
+      setOauthMessage({ type: "error", text: `Error connecting to Lightspeed: ${error}` });
     }
-    const userData = await res.json();
-    setUser(userData);
-  } catch (error) {
-    console.error('Auth check failed:', error);
-    router.push('/login');
-  } finally {
-    setLoading(false);
-  }
-};
 
-const checkLightspeedStatus = async () => {
-  try {
-    const res = await fetch('/api/lightspeed/status');
-    if (res.ok) {
-      const status = await res.json();
-      setLightspeedStatus(status);
-    } else if (res.status === 401) {
-      // Don't fail the whole dashboard if Lightspeed auth fails
-      console.log('Lightspeed not authenticated, but continuing with dashboard');
-      setLightspeedStatus({ isConnected: false });
-    }
-  } catch (error) {
-    console.error('Failed to check Lightspeed status:', error);
-    // Set default state so dashboard still works
-    setLightspeedStatus({ isConnected: false });
-  }
-};
+    // Clean up URL parameters
+    window.history.replaceState({}, "", window.location.pathname);
+  }, []);
 
-  const handleConnectToLightspeed = async () => {
-    setConnectingToLightspeed(true);
+  const checkAuthStatus = async () => {
     try {
-      const res = await fetch('/api/lightspeed/auth-url');
+      const res = await fetch("/api/auth/me", {
+        credentials: "include", // Make sure cookies are sent
+      });
+      if (!res.ok) {
+        if (res.status === 401) {
+          console.log("User not authenticated, redirecting to login");
+          router.push("/login");
+          return;
+        }
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const userData = await res.json();
+      setUser(userData);
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      router.push("/login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkLightspeedStatus = async () => {
+    try {
+      const res = await fetch("/api/lightspeed/status");
       if (res.ok) {
-        const { authUrl } = await res.json();
-        // Open Lightspeed OAuth in new window
-        window.location.href = authUrl;
-      } else {
-        throw new Error('Failed to get auth URL');
+        const status = await res.json();
+        setLightspeedStatus(status);
+      } else if (res.status === 401) {
+        // Don't fail the whole dashboard if Lightspeed auth fails
+        console.log(
+          "Lightspeed not authenticated, but continuing with dashboard"
+        );
+        setLightspeedStatus({ isConnected: false });
       }
     } catch (error) {
-      console.error('Failed to connect to Lightspeed:', error);
+      console.error("Failed to check Lightspeed status:", error);
+      setLightspeedStatus({ isConnected: false });
+    }
+  };
+
+  const handleConnectToLightspeed = async () => {
+    try {
+      setConnectingToLightspeed(true);
+      const response = await fetch("/api/lightspeed/auth-url", {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.authUrl;
+      } else {
+        throw new Error("Failed to get auth URL");
+      }
+    } catch (error) {
+      console.error("Failed to connect to Lightspeed:", error);
+    } finally {
       setConnectingToLightspeed(false);
+    }
+  };
+
+  const handleSyncNow = async () => {
+    try {
+      const res = await fetch("/api/lightspeed/sync", {
+        method: "POST",
+      });
+      if (res.ok) {
+        alert("Sync started!");
+        checkLightspeedStatus();
+      } else {
+        alert("Failed to start sync.");
+      }
+    } catch {
+      alert("Sync error.");
     }
   };
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      router.push('/login');
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -129,14 +175,18 @@ const checkLightspeedStatus = async () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <Package className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">BikeShop Dashboard</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                BikeShop Dashboard
+              </h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <User className="h-5 w-5 text-gray-500" />
                 <span className="text-sm text-gray-700">{user?.email}</span>
                 {user?.isAdmin && (
-                  <Badge variant="secondary" className="text-xs">Admin</Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    Admin
+                  </Badge>
                 )}
               </div>
               <Button variant="outline" size="sm" onClick={handleLogout}>
@@ -147,15 +197,28 @@ const checkLightspeedStatus = async () => {
         </div>
       </header>
 
+      {/* OAuth Success/Error Alert */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {oauthMessage && (
+          <Alert
+            variant={oauthMessage.type === "success" ? "default" : "destructive"}
+            className="mb-4"
+          >
+            <AlertDescription>{oauthMessage.text}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Hey {user?.firstName || 'there'}! 👋
+            Hey {user?.firstName || "there"}! 👋
           </h2>
           <p className="text-gray-600">
-            Welcome to your BikeShop dashboard. Manage your inventory and sync with Lightspeed.
+            Welcome to your BikeShop dashboard. Manage your inventory and sync
+            with Lightspeed.
           </p>
         </div>
 
@@ -173,21 +236,26 @@ const checkLightspeedStatus = async () => {
                 )}
               </CardTitle>
               <CardDescription>
-                Connect your Lightspeed POS to sync inventory and manage products
+                Connect your Lightspeed POS to sync inventory and manage
+                products
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">Connection Status:</span>
-                  <Badge 
-                    variant={lightspeedStatus.isConnected ? "default" : "destructive"}
+                  <Badge
+                    variant={
+                      lightspeedStatus.isConnected ? "default" : "destructive"
+                    }
                     className="text-xs"
                   >
-                    {lightspeedStatus.isConnected ? 'Connected' : 'Not Connected'}
+                    {lightspeedStatus.isConnected
+                      ? "Connected"
+                      : "Not Connected"}
                   </Badge>
                 </div>
-                
+
                 {lightspeedStatus.isConnected && lightspeedStatus.lastSync && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Last Sync:</span>
@@ -209,14 +277,15 @@ const checkLightspeedStatus = async () => {
                 {!lightspeedStatus.isConnected && (
                   <Alert>
                     <AlertDescription>
-                      Connect to Lightspeed to sync your inventory and manage products directly from your POS system.
+                      Connect to Lightspeed to sync your inventory and manage
+                      products directly from your POS system.
                     </AlertDescription>
                   </Alert>
                 )}
 
                 <div className="flex gap-2">
                   {!lightspeedStatus.isConnected ? (
-                    <Button 
+                    <Button
                       onClick={handleConnectToLightspeed}
                       disabled={connectingToLightspeed}
                       className="flex items-center gap-2"
@@ -230,7 +299,7 @@ const checkLightspeedStatus = async () => {
                     </Button>
                   ) : (
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={handleSyncNow}>
                         Sync Now
                       </Button>
                       <Button variant="outline" size="sm">
@@ -274,13 +343,17 @@ const checkLightspeedStatus = async () => {
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your latest actions and system updates</CardDescription>
+            <CardDescription>
+              Your latest actions and system updates
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8 text-gray-500">
               <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p>No recent activity to show</p>
-              <p className="text-sm">Connect to Lightspeed to start tracking inventory changes</p>
+              <p className="text-sm">
+                Connect to Lightspeed to start tracking inventory changes
+              </p>
             </div>
           </CardContent>
         </Card>
