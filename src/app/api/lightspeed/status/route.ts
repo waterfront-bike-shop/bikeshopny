@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    // Verify user is authenticated
+    // Authenticate user via JWT in cookie
     const cookieHeader = request.headers.get('cookie');
     if (!cookieHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -22,27 +22,74 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Check if user has a Lightspeed connection
+    const userId = parseInt(payload.sub);
+
+    // Fetch user's active Lightspeed connection
     const connection = await prisma.lightspeedConnection.findUnique({
-      where: { 
-        userId: parseInt(payload.sub),
-        isActive: true,
-      },
+      where: { userId },
     });
 
-    if (!connection) {
+    if (!connection || !connection.isActive) {
+      return NextResponse.json({ isConnected: false });
+    }
+
+    // Check if token has expired
+    const now = new Date();
+    const isExpired = connection.expiresAt <= now;
+
+    if (!isExpired) {
       return NextResponse.json({
-        isConnected: false,
+        isConnected: true,
+        lastSync: connection.lastSync?.toISOString(),
+        accountId: connection.accountId,
       });
     }
 
-    // Check if token is still valid (not expired)
-    const isExpired = connection.expiresAt < new Date();
-    
+    console.log('Access token expired — attempting refresh');
+
+    // Prepare the refresh request
+    const refreshParams = new URLSearchParams({
+      client_id: process.env.LIGHTSPEED_CLIENT_ID!,
+      client_secret: process.env.LIGHTSPEED_CLIENT_SECRET!,
+      grant_type: 'refresh_token',
+      refresh_token: connection.refreshToken!,
+    });
+
+    const refreshResponse = await fetch('https://cloud.lightspeedapp.com/oauth/access_token.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: refreshParams,
+    });
+
+    if (!refreshResponse.ok) {
+      const errorText = await refreshResponse.text();
+      console.error('Token refresh failed:', errorText);
+      return NextResponse.json({ isConnected: false, error: 'Token refresh failed' });
+    }
+
+    const refreshed = await refreshResponse.json();
+
+    // Compute new expiration
+    const newExpiresAt = new Date(Date.now() + (refreshed.expires_in || 3600) * 1000);
+
+    // Save updated tokens to DB
+    const updatedConnection = await prisma.lightspeedConnection.update({
+      where: { userId },
+      data: {
+        accessToken: refreshed.access_token,
+        refreshToken: refreshed.refresh_token || connection.refreshToken,
+        expiresAt: newExpiresAt,
+        lastSync: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    console.log('Token refreshed and saved');
+
     return NextResponse.json({
-      isConnected: !isExpired,
-      lastSync: connection.lastSync?.toISOString(),
-      accountId: connection.accountId,
+      isConnected: true,
+      lastSync: updatedConnection.lastSync?.toISOString(),
+      accountId: updatedConnection.accountId,
     });
 
   } catch (error) {

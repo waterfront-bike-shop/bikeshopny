@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    console.log('env variables OK')
+    console.log('Lightspeed .env variables OK!')
 
     // Generate a secure random state value and store it temporarily
     const state = crypto.randomUUID();

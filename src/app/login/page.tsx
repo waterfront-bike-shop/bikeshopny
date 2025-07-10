@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
 
       // On success, redirect to admin dashboard
       router.push('/dashboard');
-    } catch (error) {
+    } catch {
       setErrorMsg('Network error, please try again.');
       setLoading(false);
     }

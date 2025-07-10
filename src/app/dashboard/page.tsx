@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -44,33 +44,12 @@ export default function DashboardPage() {
     });
   const [loading, setLoading] = useState(true);
   const [connectingToLightspeed, setConnectingToLightspeed] = useState(false);
-  const [oauthMessage, setOauthMessage] = useState<
-    { type: "success" | "error"; text: string } | null
-  >(null);
+  const [oauthMessage, setOauthMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  useEffect(() => {
-    checkAuthStatus();
-    checkLightspeedStatus();
-  }, []);
-
-  // Handle OAuth callback success/error messages
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get("success");
-    const error = urlParams.get("error");
-
-    if (success === "lightspeed_connected") {
-      setOauthMessage({ type: "success", text: "Lightspeed connected successfully!" });
-      checkLightspeedStatus();
-    } else if (error) {
-      setOauthMessage({ type: "error", text: `Error connecting to Lightspeed: ${error}` });
-    }
-
-    // Clean up URL parameters
-    window.history.replaceState({}, "", window.location.pathname);
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/me", {
         credentials: "include", // Make sure cookies are sent
@@ -91,9 +70,9 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
-  const checkLightspeedStatus = async () => {
+  const checkLightspeedStatus = useCallback(async () => {
     try {
       const res = await fetch("/api/lightspeed/status");
       if (res.ok) {
@@ -110,7 +89,35 @@ export default function DashboardPage() {
       console.error("Failed to check Lightspeed status:", error);
       setLightspeedStatus({ isConnected: false });
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkAuthStatus();
+    checkLightspeedStatus();
+  }, [checkAuthStatus, checkLightspeedStatus]);
+
+  // Handle OAuth callback success/error messages
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get("success");
+    const error = urlParams.get("error");
+
+    if (success === "lightspeed_connected") {
+      setOauthMessage({
+        type: "success",
+        text: "Lightspeed connected successfully!",
+      });
+      checkLightspeedStatus();
+    } else if (error) {
+      setOauthMessage({
+        type: "error",
+        text: `Error connecting to Lightspeed: ${error}`,
+      });
+    }
+
+    // Clean up URL parameters
+    window.history.replaceState({}, "", window.location.pathname);
+  }, [checkLightspeedStatus]);
 
   const handleConnectToLightspeed = async () => {
     try {
@@ -201,7 +208,9 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
         {oauthMessage && (
           <Alert
-            variant={oauthMessage.type === "success" ? "default" : "destructive"}
+            variant={
+              oauthMessage.type === "success" ? "default" : "destructive"
+            }
             className="mb-4"
           >
             <AlertDescription>{oauthMessage.text}</AlertDescription>
@@ -218,7 +227,7 @@ export default function DashboardPage() {
           </h2>
           <p className="text-gray-600">
             Welcome to your BikeShop dashboard. Manage your inventory and sync
-            with Lightspeed.
+            with Lightspeed. Update content on your site.
           </p>
         </div>
 
@@ -243,7 +252,9 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Connection Status:</span>
+                  <span className="text-sm font-medium">
+                    Connection Status:
+                  </span>
                   <Badge
                     variant={
                       lightspeedStatus.isConnected ? "default" : "destructive"
@@ -299,7 +310,11 @@ export default function DashboardPage() {
                     </Button>
                   ) : (
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={handleSyncNow}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleSyncNow}
+                      >
                         Sync Now
                       </Button>
                       <Button variant="outline" size="sm">
@@ -354,6 +369,30 @@ export default function DashboardPage() {
               <p className="text-sm">
                 Connect to Lightspeed to start tracking inventory changes
               </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 🚧 Placeholder CMS Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-yellow-500" />
+              Site Content (Coming Soon)
+            </CardTitle>
+            <CardDescription>
+              Future CMS features to manage site content and announcements.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-gray-700 list-disc pl-4 space-y-1">
+              <li>Update hero image and marketing text</li>
+              <li>Manage homepage cards and featured products</li>
+              <li>Set site-wide banners and announcements</li>
+              <li>Edit content directly</li>
+            </ul>
+            <div className="mt-4 text-xs text-gray-500 italic">
+              A content management system (CMS) is planned for future releases.
             </div>
           </CardContent>
         </Card>

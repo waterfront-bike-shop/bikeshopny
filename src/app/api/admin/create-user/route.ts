@@ -10,6 +10,7 @@ export async function POST(req: Request) {
   const token = cookieStore.get('token')?.value;
   const user = token ? verifyJWT(token) : null;
 
+  // Makes sure that only an existing admin can add a user --> used for site admin/upkeep/updates!
   if (!user || !user.isAdmin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }

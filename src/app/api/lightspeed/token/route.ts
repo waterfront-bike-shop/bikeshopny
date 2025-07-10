@@ -8,9 +8,9 @@ export async function POST(request: NextRequest) {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ error: 'Missing or invalid authorization header' }, { status: 401 });
     }
-    
+
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    
+
     // Verify user authentication
     const user = await verifyJWT(token);
     if (!user) {
@@ -18,38 +18,27 @@ export async function POST(request: NextRequest) {
     }
 
     const { code, state } = await request.json();
-
     if (!code) {
       return NextResponse.json({ error: 'Missing authorization code' }, { status: 400 });
     }
-
-    // Prepare the request body to exchange the code for tokens
-    const tokenRequest = {
-      client_id: process.env.LIGHTSPEED_CLIENT_ID,
-      client_secret: process.env.LIGHTSPEED_CLIENT_SECRET,
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: process.env.LIGHTSPEED_REDIRECT_URI,
-    };
 
     console.log('Exchanging code for tokens...');
     console.log('State:', state);
 
     // POST request to Lightspeed token endpoint
-  const response = await fetch('https://cloud.lightspeedapp.com/oauth/access_token.php', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-  },
-  body: new URLSearchParams({
-    client_id: process.env.LIGHTSPEED_CLIENT_ID!,
-    client_secret: process.env.LIGHTSPEED_CLIENT_SECRET!,
-    code,
-    grant_type: 'authorization_code',
-    redirect_uri: process.env.LIGHTSPEED_REDIRECT_URI!,
-  }),
-});
-
+    const response = await fetch('https://cloud.lightspeedapp.com/oauth/access_token.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: process.env.LIGHTSPEED_CLIENT_ID!,
+        client_secret: process.env.LIGHTSPEED_CLIENT_SECRET!,
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: process.env.LIGHTSPEED_REDIRECT_URI!,
+      }),
+    });
 
     const responseData = await response.json();
 
@@ -66,7 +55,6 @@ export async function POST(request: NextRequest) {
 
     // Here you would typically save the tokens to your database
     // For now, just return the success response
-    
     // TODO: Save tokens to database
     // await saveTokensToDatabase(user.id, responseData);
 

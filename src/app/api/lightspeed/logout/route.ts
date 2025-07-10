@@ -1,7 +1,9 @@
 // src/app/api/auth/logout/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+// import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+// export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Create response that clears the auth cookie
     const response = NextResponse.json({ message: 'Logged out successfully' });

@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { verifyJWT } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+// Cookies over Local Storage for more security -- and just for admin users anyway.
+
 export async function GET(req: Request) {
   try {
     // Get the cookie from the request

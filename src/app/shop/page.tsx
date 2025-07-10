@@ -3,6 +3,8 @@
 
 import React from "react";
 import Hero from "../components/Hero";
+import ShopItemsDemoImages from "../components/ShopItemsDemoImages";
+// import ShopItemsDemo from "../components/ShopItemsDemo";
 
 const Shop: React.FC = () => {
   return (
@@ -24,6 +26,9 @@ const Shop: React.FC = () => {
             Stop in the shop to see what we have.
           </p>
         </div>
+        {/* <ShopItemsDemo /> */}
+
+        <ShopItemsDemoImages />
       </section>
     </>
     // Doesn't Work --> Lightspeed does not allow iframe embedding.
