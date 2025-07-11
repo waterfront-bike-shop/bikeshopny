@@ -35,6 +35,8 @@ DEV:
 For OAuth2 with Lightspeed need to run an https server. Do that with mkcert. Install with mkcert localhost 127.0.0.1 ::1 in project dir.
 
 Lightspeed API: `https://developers.lightspeedhq.com/retail/introduction/introduction/`
+`https://developers.lightspeedhq.com/retail/endpoints/Item-Image/`
+& etc.
 
 ## Admin Dashboard
 

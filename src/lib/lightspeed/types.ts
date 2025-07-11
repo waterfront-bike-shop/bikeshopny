@@ -1,5 +1,4 @@
 // lib/lightspeed/types.ts
-
 /**
  * Lightspeed API Types
  * These interfaces define the structure of data returned from the Lightspeed Retail API
@@ -66,9 +65,28 @@ export interface LightspeedImageResponse {
   Image?: LightspeedImage;
 }
 
+// Category structure from Lightspeed API
+export interface LightspeedCategory {
+  categoryID: string;
+  name: string;
+  nodeDepth: string;
+  fullPathName: string;
+  leftNode: string;
+  rightNode: string;
+  createTime: string;
+  timeStamp: string;
+  parentID: string;
+  // Allow for additional properties from API
+  [key: string]: unknown;
+}
+
 // API response structures
 export interface LightspeedItemsResponse {
   Item?: LightspeedItem[];
+}
+
+export interface LightspeedCategoriesResponse {
+  Category?: LightspeedCategory[];
 }
 
 // Utility type helpers
