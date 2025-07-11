@@ -80,6 +80,14 @@ export interface LightspeedCategory {
   [key: string]: unknown;
 }
 
+// Tag structure from Lightspeed API
+export interface LightspeedTag {
+  tagID: string;
+  name: string;
+  // Allow for additional properties from API
+  [key: string]: unknown;
+}
+
 // API response structures
 export interface LightspeedItemsResponse {
   Item?: LightspeedItem[];
@@ -87,6 +95,11 @@ export interface LightspeedItemsResponse {
 
 export interface LightspeedCategoriesResponse {
   Category?: LightspeedCategory[];
+}
+
+// Fixed: Tag can be either a single object or an array
+export interface LightspeedTagsResponse {
+  Tag?: LightspeedTag | LightspeedTag[];
 }
 
 // Utility type helpers
