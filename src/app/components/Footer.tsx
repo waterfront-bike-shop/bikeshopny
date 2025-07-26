@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { InstagramLogo, Star } from "phosphor-react";
 import KayakBadge from "./KayakBadge";
+import Image from "next/image";
 
 const Footer: React.FC = () => {
   const [ratings, setRatings] = useState<{
@@ -101,10 +102,12 @@ const Footer: React.FC = () => {
               rel="noopener noreferrer"
               className="text-white flex items-center space-x-2 hover:text-gray-300"
             >
-              <img
+              <Image
                 src="/logos/google_g_icon.png"
                 alt="Google G Icon"
                 className="h-8 w-8 rounded"
+                width={512}
+                height={512}
               />
               <div className="flex items-center">
                 <Star size={20} weight="fill" />

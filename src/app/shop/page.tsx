@@ -3,7 +3,10 @@
 
 import React from "react";
 import Hero from "../components/Hero";
-import ShopItemsDemoImages from "../components/ShopItemsDemoImages";
+// Experimenting here...tests out images
+// import ShopItemsDemoImages from "../components/ShopItemsDemoImages";
+import BikeShopInventory from "../components/BikeShopInventory";
+// Also testing out the Lightspeed API here as well. 
 // import ShopItemsDemo from "../components/ShopItemsDemo";
 
 const Shop: React.FC = () => {
@@ -28,10 +31,12 @@ const Shop: React.FC = () => {
         </div>
         {/* <ShopItemsDemo /> */}
 
-        <ShopItemsDemoImages />
+        {/* <ShopItemsDemoImages /> */}
+        <BikeShopInventory />
       </section>
     </>
-    // Doesn't Work --> Lightspeed does not allow iframe embedding.
+    // // Doesn't Work!!!! --> Lightspeed does not allow iframe embedding.
+    // // Code left in so you know it was tried!
     // <div className="w-full min-h-screen bg-white flex justify-center items-center">
     //   <iframe
     //     src="https://waterfront-bicycle-shop.shoplightspeed.com/"
