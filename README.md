@@ -50,3 +50,4 @@ In Progress:
 - Lightspeed OAuth all in one folder
 - Auth for internal i.e. admin access in one folder
 - Shop/ for everything product related, rather than Lightspeed, in order to abstract the source, and leave it open for caching product locally OR for a different POS provider, etc. A user does not need to know that this data is from Lightspeed via an API call or client-side network traffic, etc.
+
