@@ -46,3 +46,8 @@ next-env.d.ts
 
 /BRM-scraper
 py_util/BRM-scraper/
+
+#Temp Server
+/go_util
+# PRISMA stuff
+/src/generated 

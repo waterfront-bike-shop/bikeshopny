@@ -3,14 +3,36 @@
 import React, { useEffect, useState } from "react";
 import { InstagramLogo, Star } from "phosphor-react";
 import KayakBadge from "./KayakBadge";
+import { usePathname } from "next/navigation";
 
 const Footer: React.FC = () => {
+  const pathname = usePathname();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect screen size (Tailwind's sm breakpoint is 640px)
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkScreenSize(); // Initial check
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  // Ratings state
   const [ratings, setRatings] = useState<{
     tripAdvisor: number | null;
     yelp: number | null;
     google: number | null;
   } | null>(null);
 
+  // Simulated fetch functions (replace with real fetches)
+  const fetchTripAdvisorRating = async (): Promise<number> => 4.9;
+  const fetchYelpRating = async (): Promise<number> => 4.7;
+  const fetchGoogleRating = async (): Promise<number> => 4.8;
+
+  // Fetch ratings & cache logic
   useEffect(() => {
     const fetchRatings = async () => {
       const cachedRatings = localStorage.getItem("ratings");
@@ -43,24 +65,20 @@ const Footer: React.FC = () => {
     fetchRatings();
   }, []);
 
-  const fetchTripAdvisorRating = async (): Promise<number> => {
-    return 4.9; // Replace with real fetch
-  };
+  // Determine if footer should be hidden => MOBILE and < 40rem (640px)	aka @media (width >= 40rem)
+  const shouldHideFooter = isMobile && pathname.includes("/rentals");
 
-  const fetchYelpRating = async (): Promise<number> => {
-    return 4.7; // Replace with real fetch
-  };
-
-  const fetchGoogleRating = async (): Promise<number> => {
-    return 4.8; // Replace with real fetch
-  };
-
-  if (!ratings) return <div>Loading...</div>;
+  // Return null if ratings not loaded yet (after hooks)
+  if (!ratings) return null;
 
   return (
-    <footer className="bg-blue-800 text-white py-10 px-6">
+    <footer
+      className={`bg-blue-800 text-white py-10 px-6 transition-opacity duration-300 ${
+        shouldHideFooter ? "hidden" : "block"
+      }`}
+    >
       <div className="max-w-screen-xl mx-auto space-y-6 sm:flex sm:justify-between sm:items-center sm:space-y-0">
-        {/* Left Column: Contact Info */}
+        {/* Contact Info */}
         <div className="space-y-4 sm:space-y-6">
           <h2 className="text-2xl font-bold">Contact Us</h2>
           <div className="space-y-2">
@@ -81,10 +99,9 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Social & Ratings */}
+        {/* Ratings */}
         <div className="space-y-4 sm:space-y-6">
           <div className="flex flex-wrap gap-4 items-center">
-            {/* Instagram */}
             <a
               href="https://www.instagram.com/waterfrontbicycleshop/"
               target="_blank"
@@ -94,7 +111,6 @@ const Footer: React.FC = () => {
               <InstagramLogo size={40} />
             </a>
 
-            {/* Google */}
             <a
               href="https://g.co/kgs/eMAUaVi"
               target="_blank"
@@ -111,55 +127,19 @@ const Footer: React.FC = () => {
                 <span className="text-lg">{ratings.google}</span>
               </div>
             </a>
-
-            {/* TripAdvisor */}
-            {/* <a
-              href="https://www.tripadvisor.com/Attraction_Review-g60763-d8444605-Reviews-Waterfront_Bicycle_Shop-New_York_City_New_York.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-white flex items-center space-x-2 hover:text-gray-300"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/55/Tripadvisor_logo_2019.svg"
-                alt="TripAdvisor Logo"
-                className="h-8 w-8"
-              />
-              <div className="flex items-center">
-                <Star size={20} weight="fill" />
-                <span className="text-lg">{ratings.tripAdvisor}</span>
-              </div>
-            </a> */}
-
-            {/* Yelp */}
-            {/* <a
-              href="https://www.yelp.com/biz/waterfront-bicycle-shop-new-york"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-white flex items-center space-x-2 hover:text-gray-300"
-            >
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/8/84/Yelp_Logo_2019.png"
-                alt="Yelp Logo"
-                className="h-8 w-8"
-              />
-              <div className="flex items-center">
-                <Star size={20} weight="fill" />
-                <span className="text-lg">{ratings.yelp}</span>
-              </div>
-            </a> */}
           </div>
-
-          {/* Kayak Badge */}
+          
+          {/* Kayak Badge is a link exchange with Kayak, which is why we have it here. */}
           <KayakBadge />
         </div>
       </div>
 
-            {/* Copyright */}
-            <div className="mt-10 text-center text-xs text-gray-300">
-        &copy; {new Date().getFullYear()} Waterfront Bicycle Shop, 391 West Street NY, NY 10014<br />
+      <div className="mt-10 text-center text-xs text-gray-300">
+        &copy; {new Date().getFullYear()} Waterfront Bicycle Shop, 391 West Street
+        NY, NY 10014
+        <br />
         All Rights Reserved
       </div>
-      
     </footer>
   );
 };
