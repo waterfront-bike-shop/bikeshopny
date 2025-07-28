@@ -24,6 +24,9 @@ Set up min and max rental durations
   1. https://brm2.bikerentalmanager.com/support/solutions/articles/42000084061-min-max-rental-duration-by-product-family
   2. Go to Settings -> optional features -> Online buffers + Online Rental duration
 
+## Add a new bike into BRM
+  1. See the readme.md in the py_util folder.
+
 ## Stripe
 
 1. Integration instructions: https://brm2.bikerentalmanager.com/support/solutions/articles/42000068983-setting-up-stripe-as-your-payment-processor
