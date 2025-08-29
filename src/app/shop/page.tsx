@@ -1,14 +1,26 @@
-// app/rentals/page.tsx
+// app/shop/page.tsx
 "use client";
 export const dynamic = 'force-dynamic';
 
-import React from "react";
+import React, { Suspense } from "react";
 import Hero from "../components/Hero";
 // Experimenting here...tests out images
 // import ShopItemsDemoImages from "../components/ShopItemsDemoImages";
 import BikeShopInventory from "../components/BikeShopInventory";
-// Also testing out the Lightspeed API here as well. 
+// Also testing out the Lightspeed API here as well.
 // import ShopItemsDemo from "../components/ShopItemsDemo";
+
+function InventoryLoadingFallback() {
+  return (
+    <div className="max-w-screen-xl mx-auto px-6 py-8">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading Inventory...</h3>
+        <p className="text-gray-600">Fetching our latest parts and accessories</p>
+      </div>
+    </div>
+  );
+}
 
 const Shop: React.FC = () => {
   return (
@@ -31,21 +43,12 @@ const Shop: React.FC = () => {
           </p>
         </div>
         {/* <ShopItemsDemo /> */}
-
         {/* <ShopItemsDemoImages /> */}
-        <BikeShopInventory />
+        <Suspense fallback={<InventoryLoadingFallback />}>
+          <BikeShopInventory />
+        </Suspense>
       </section>
     </>
-    // // Doesn't Work!!!! --> Lightspeed does not allow iframe embedding.
-    // // Code left in so you know it was tried!
-    // <div className="w-full min-h-screen bg-white flex justify-center items-center">
-    //   <iframe
-    //     src="https://waterfront-bicycle-shop.shoplightspeed.com/"
-    //     title="Waterfront Bicycle Shop - Parts & Accessories"
-    //     className="w-full h-[100vh] border-0"
-    //     allowFullScreen
-    //   ></iframe>
-    // </div>
   );
 };
 
