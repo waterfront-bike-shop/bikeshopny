@@ -91,6 +91,10 @@ export interface LightspeedTag {
 // API response structures
 export interface LightspeedItemsResponse {
   Item?: LightspeedItem[];
+  "@attributes"?: {
+    next?: string;
+    [key: string]: unknown; // allow other potential attributes
+  };
 }
 
 export interface LightspeedCategoriesResponse {
