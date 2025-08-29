@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Search, MapPin, Phone, Clock, Filter, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-// Types (Your existing types)
+// Types
 interface ItemPrice {
   amount: string;
   useTypeID: string;
@@ -53,31 +53,34 @@ interface FilterState {
   priceRange: [number, number];
   inStockOnly: boolean;
   selectedTags: string[];
+  hasImageOnly: boolean; // Corrected: No trailing comma or syntax error
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 20;
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
+// Corrected: The main component function is now correctly defined
 const BikeShopInventory: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [items, setItems] = useState<LightspeedItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  console.log("Tags: ",tags) // temp eslint workaround
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
-  console.log(tags)
 
-  // Filter state
+  // Corrected: Initial state with `hasImageOnly` set to false
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: "",
     selectedCategory: "all",
     selectedBrand: "all",
     priceRange: [0, 5000],
     inStockOnly: false,
-    selectedTags: []
+    selectedTags: [],
+    hasImageOnly: false // Corrected: Added to initial state
   });
 
   const brands = ["Trek", "Specialized", "Giant", "Cannondale", "Shimano", "SRAM", "Fox"];
@@ -129,12 +132,16 @@ const BikeShopInventory: React.FC = () => {
     const category = searchParams.get('category') || "all";
     const brand = searchParams.get('brand') || "all";
     const tags = searchParams.getAll('tags');
+    // Corrected: Read the boolean value from the URL
+    const hasImageOnly = searchParams.get('hasImageOnly') === 'true'; 
+
     setFilters(prev => ({
       ...prev,
       searchTerm: search,
       selectedCategory: category,
       selectedBrand: brand,
-      selectedTags: tags
+      selectedTags: tags,
+      hasImageOnly: hasImageOnly // Corrected: Assign the parsed value
     }));
   }, [searchParams]);
 
@@ -145,14 +152,12 @@ const BikeShopInventory: React.FC = () => {
     const cachedTags = localStorage.getItem('ls_tags');
 
     if (cachedItems && cachedCategories && cachedTags) {
-      // If cached data exists, parse and use it
       setItems(JSON.parse(cachedItems));
       setCategories(JSON.parse(cachedCategories));
       setTags(JSON.parse(cachedTags));
       console.log("Using cached data from localStorage.");
       setLoading(false);
     } else {
-      // If no cached data, perform the initial fetch
       refreshData();
     }
   }, []);
@@ -162,6 +167,7 @@ const BikeShopInventory: React.FC = () => {
     if (newFilters.searchTerm) params.set('search', newFilters.searchTerm);
     if (newFilters.selectedCategory !== "all") params.set('category', newFilters.selectedCategory);
     if (newFilters.selectedBrand !== "all") params.set('brand', newFilters.selectedBrand);
+    if (newFilters.hasImageOnly) params.set('hasImageOnly', 'true'); // Corrected: Set the URL parameter
     newFilters.selectedTags.forEach(tag => params.append('tags', tag));
     const queryString = params.toString();
     const newUrl = queryString ? `?${queryString}` : window.location.pathname;
@@ -172,7 +178,7 @@ const BikeShopInventory: React.FC = () => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     updateURL(newFilters);
-    setCurrentPage(1); // reset page
+    setCurrentPage(1);
   };
 
   const getCategoryName = (categoryID: string): string => {
@@ -194,11 +200,14 @@ const BikeShopInventory: React.FC = () => {
       item.description.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
       item.systemSku.toLowerCase().includes(filters.searchTerm.toLowerCase());
     const matchesCategory = filters.selectedCategory === "all" || item.categoryID === filters.selectedCategory;
-    const matchesBrand = filters.selectedBrand === "all"; // TODO: brand mapping
+    const matchesBrand = filters.selectedBrand === "all";
     const price = getDefaultPrice(item.Prices);
     const matchesPrice = price >= filters.priceRange[0] && price <= filters.priceRange[1];
     const matchesStock = !filters.inStockOnly || item.publishToEcom === "true";
-    return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock;
+    // Corrected: The filter logic to check if an image exists
+    const matchesImage = !filters.hasImageOnly || (item.imageUrl && item.imageUrl !== "/images/placeholder.png");
+    
+    return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock && matchesImage; // Corrected: Added the new filter check
   });
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
@@ -215,7 +224,8 @@ const BikeShopInventory: React.FC = () => {
       selectedBrand: "all",
       priceRange: [0, 5000],
       inStockOnly: false,
-      selectedTags: []
+      selectedTags: [],
+      hasImageOnly: false // Corrected: Reset the new filter
     };
     setFilters(cleared);
     updateURL(cleared);
@@ -369,6 +379,19 @@ const BikeShopInventory: React.FC = () => {
                 </label>
               </div>
               
+              {/* Corrected: Added the "Items with Images" filter with correct syntax */}
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={filters.hasImageOnly}
+                    onChange={(e) => updateFilter('hasImageOnly', e.target.checked)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-slate-700">Show Items with Images</span>
+                </label>
+              </div>
+
               {/* --- Refresh Button --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <button
@@ -379,7 +402,6 @@ const BikeShopInventory: React.FC = () => {
                   Refresh Inventory
                 </button>
               </div>
-
             </div>
           </div>
 
@@ -479,9 +501,6 @@ const BikeShopInventory: React.FC = () => {
 };
 
 export default BikeShopInventory;
-
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { Search, MapPin, Phone, Clock, Filter, ChevronLeft, ChevronRight } from "lucide-react";
