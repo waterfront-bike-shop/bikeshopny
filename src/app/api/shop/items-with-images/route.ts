@@ -1,4 +1,3 @@
-// src/app/api/shop/items-with-images/route.ts
 import { NextResponse } from "next/server";
 import { getValidLightspeedToken } from "@/lib/lightspeed/token";
 import {
@@ -7,6 +6,10 @@ import {
   LightspeedImageResponse,
   LightspeedItemsResponse,
 } from "@/lib/lightspeed/types";
+
+// Extend the serverless function timeout for long-running tasks.
+// The default is 10s on the Hobby plan, so 5 minutes should be plenty.
+export const maxDuration = 300;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -66,7 +69,36 @@ async function fetchImagesInBatches(
 export const GET = async () => {
   try {
     const userId = 1;
-    const { accessToken, accountId } = await getValidLightspeedToken(userId);
+    let tokenData;
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    // Add a retry loop for the initial token fetch to handle cold starts.
+    while (!tokenData && retryCount < maxRetries) {
+      try {
+        console.log(`Attempting to get Lightspeed token (Attempt ${retryCount + 1}/${maxRetries})...`);
+        tokenData = await getValidLightspeedToken(userId);
+        if (!tokenData) {
+          // If the function returns null/undefined, treat it as a failure.
+          throw new Error("getValidLightspeedToken returned null or undefined.");
+        }
+      } catch (err) {
+        console.error(`[Lightspeed] Token fetch attempt ${retryCount + 1} failed:`, err);
+        retryCount++;
+        // Wait before retrying to give the database time to "wake up."
+        await sleep(2000 * retryCount); // Exponential backoff
+      }
+    }
+
+    if (!tokenData) {
+      console.error("[Lightspeed] Failed to get valid token after multiple retries. Aborting.");
+      return NextResponse.json(
+        { error: "Failed to retrieve Lightspeed credentials. Please check your database connection and environment variables." },
+        { status: 500 }
+      );
+    }
+    
+    const { accessToken, accountId } = tokenData;
 
     if (!accountId) {
       return NextResponse.json(
@@ -135,7 +167,7 @@ export const GET = async () => {
   } catch (error) {
     console.error("[Lightspeed] Unexpected error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "An unexpected internal server error occurred." },
       { status: 500 }
     );
   }
