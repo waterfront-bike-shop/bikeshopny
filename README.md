@@ -3,7 +3,7 @@
 Next.js frontend with Bike Rental Manager integration and (TBD) Lightspeed Integration
 
 ## Deploying site
-1. First, test out on Netlify
+1. First, tested out on Netlify
 2. For Production, trying Vercel and a Pro Account.
    1. Sign up with email
 3. Neon Database - PostgreSQL
