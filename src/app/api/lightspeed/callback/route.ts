@@ -6,13 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const state = searchParams.get('state');
     const error = searchParams.get('error');
-
-    // Force TS to recognize state as used (does nothing at runtime)
-    void state;
-    console.log('State received:', state); 
 
     // DEBUG: Log all environment variables (be careful with secrets in production)
     console.log('=== DEBUG: Environment Variables ===');
