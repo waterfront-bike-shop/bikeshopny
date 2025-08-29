@@ -81,10 +81,10 @@ async function fetchSingleItem(
 // ------------------------
 export const GET = async (
   request: Request,
-  context: { params: { itemId: string } }
+  context: { params: Promise<{ itemId: string }> }
 ) => {
-  const { params } = context;
-  const { itemId } = params;
+  // Await the params promise
+  const { itemId } = await context.params;
 
   try {
     const userId = 1;
