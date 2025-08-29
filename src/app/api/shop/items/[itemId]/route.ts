@@ -1,3 +1,4 @@
+// src/app/api/shop/items/[itemId]/route.ts
 import { NextResponse } from "next/server";
 import { getValidLightspeedToken } from "@/lib/lightspeed/token";
 import {
@@ -31,7 +32,7 @@ async function fetchSingleItem(
           Authorization: `Bearer ${accessToken}`,
           Accept: "application/json",
         },
-        next: { revalidate: 86400 }, // cache for 1 day
+        next: { revalidate: 86400 },
       }
     );
 
@@ -75,10 +76,14 @@ async function fetchSingleItem(
   }
 }
 
+// ------------------------
+// GET Handler
+// ------------------------
 export const GET = async (
   request: Request,
-  { params }: { params: { itemId: string } }
+  context: { params: { itemId: string } }
 ) => {
+  const { params } = context;
   const { itemId } = params;
 
   try {
@@ -86,7 +91,6 @@ export const GET = async (
     let tokenData;
     const maxRetries = 3;
 
-    // Retry token fetch on cold starts
     for (let retry = 0; retry < maxRetries && !tokenData; retry++) {
       try {
         tokenData = await getValidLightspeedToken(userId);
