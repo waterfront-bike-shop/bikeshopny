@@ -216,7 +216,7 @@ const BikeShopInventory: React.FC = () => {
     currentPage * itemsPerPage
   );
 
-  const handleItemClick = (itemID: string) => router.push(`/items/${itemID}`);
+  const handleItemClick = (itemID: string) => router.push(`shop/items/${itemID}`);
   const clearAllFilters = () => {
     const cleared: FilterState = {
       searchTerm: "",
