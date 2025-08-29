@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Search, MapPin, Phone, Clock, Filter, X } from "lucide-react";
+import { Search, MapPin, Phone, Clock, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-// Types via API documentation
+// Types
 interface ItemPrice {
   amount: string;
   useTypeID: string;
@@ -55,6 +55,9 @@ interface FilterState {
   selectedTags: string[];
 }
 
+const DEFAULT_ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+
 const BikeShopInventory: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -63,9 +66,9 @@ const BikeShopInventory: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  
-
-  console.log(tags) // quick fix to pass the linter!
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
+  console.log(tags)
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -77,16 +80,14 @@ const BikeShopInventory: React.FC = () => {
     selectedTags: []
   });
 
-  // Mock brands - TODO!!!! -> extract these from manufacturerID/add to API
   const brands = ["Trek", "Specialized", "Giant", "Cannondale", "Shimano", "SRAM", "Fox"];
 
-  // Initialize from URL params
+  // Initialize filters from URL
   useEffect(() => {
     const search = searchParams.get('search') || "";
     const category = searchParams.get('category') || "all";
     const brand = searchParams.get('brand') || "all";
     const tags = searchParams.getAll('tags');
-    
     setFilters(prev => ({
       ...prev,
       searchTerm: search,
@@ -101,66 +102,47 @@ const BikeShopInventory: React.FC = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        
-        // Load items with images, note that Lightspeed has a max of 100. Will need to paginate
-        const itemsResponse = await fetch('/api/shop/items-with-images?limit=100');
+        const itemsResponse = await fetch('/api/shop/items-with-images?limit=1000');
         const itemsData = await itemsResponse.json();
-        
-        // Load categories
         const categoriesResponse = await fetch('/api/shop/categories');
         const categoriesData = await categoriesResponse.json();
-        
-        // Load tags
         const tagsResponse = await fetch('/api/shop/tags');
         const tagsData = await tagsResponse.json();
-        
         setItems(itemsData.items || []);
         setCategories(categoriesData.categories || []);
         setTags(tagsData.tags || []);
-        
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
 
-  // Update URL when filters change
   const updateURL = (newFilters: FilterState) => {
     const params = new URLSearchParams();
-    
     if (newFilters.searchTerm) params.set('search', newFilters.searchTerm);
     if (newFilters.selectedCategory !== "all") params.set('category', newFilters.selectedCategory);
     if (newFilters.selectedBrand !== "all") params.set('brand', newFilters.selectedBrand);
-    
-    // Handle multiple tags
-    newFilters.selectedTags.forEach(tag => {
-      params.append('tags', tag);
-    });
-    
+    newFilters.selectedTags.forEach(tag => params.append('tags', tag));
     const queryString = params.toString();
     const newUrl = queryString ? `?${queryString}` : window.location.pathname;
-    
     router.push(newUrl, { scroll: false });
   };
 
-  // Filter update handler
   const updateFilter = (key: keyof FilterState, value: unknown) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     updateURL(newFilters);
+    setCurrentPage(1); // reset page
   };
 
-  // Get category name by ID
   const getCategoryName = (categoryID: string): string => {
     const category = categories.find(c => c.categoryID === categoryID);
     return category?.name || "Uncategorized";
   };
 
-  // Helper to get default price
   const getDefaultPrice = (prices: ItemPrices): number => {
     const defaultPrice = prices.ItemPrice.find(p => 
       p.useType.toLowerCase() === "default" || p.useType.toLowerCase() === "msrp"
@@ -168,47 +150,29 @@ const BikeShopInventory: React.FC = () => {
     return defaultPrice ? parseFloat(defaultPrice.amount) : 0;
   };
 
-  // Filter items based on current filters
+  // Filter items
   const filteredItems = items.filter(item => {
-    // Skip archived items
     if (item.archived === "true") return false;
-    
-    // Search filter
     const matchesSearch = !filters.searchTerm || 
       item.description.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
       item.systemSku.toLowerCase().includes(filters.searchTerm.toLowerCase());
-    
-    // Category filter
-    const matchesCategory = filters.selectedCategory === "all" || 
-      item.categoryID === filters.selectedCategory;
-    
-    // Brand filter (you might need to implement brand mapping)
-    const matchesBrand = filters.selectedBrand === "all"; // TODO: Implement brand matching
-    
-    // Price filter
+    const matchesCategory = filters.selectedCategory === "all" || item.categoryID === filters.selectedCategory;
+    const matchesBrand = filters.selectedBrand === "all"; // TODO: brand mapping
     const price = getDefaultPrice(item.Prices);
     const matchesPrice = price >= filters.priceRange[0] && price <= filters.priceRange[1];
-    
-    // Stock filter (assuming publishToEcom indicates availability)
     const matchesStock = !filters.inStockOnly || item.publishToEcom === "true";
-    
     return matchesSearch && matchesCategory && matchesBrand && matchesPrice && matchesStock;
   });
 
-  // Handle individual item click
-  const handleItemClick = (itemID: string) => {
-    router.push(`/items/${itemID}`);
-  };
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const paginatedItems = filteredItems.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-  // Handle category click
-  const handleCategoryClick = (categoryID: string) => {
-    updateFilter('selectedCategory', categoryID);
-  };
-  console.log(handleCategoryClick) // lint fix
-
-  // Clear all filters
+  const handleItemClick = (itemID: string) => router.push(`/items/${itemID}`);
   const clearAllFilters = () => {
-    const clearedFilters: FilterState = {
+    const cleared: FilterState = {
       searchTerm: "",
       selectedCategory: "all",
       selectedBrand: "all",
@@ -216,24 +180,23 @@ const BikeShopInventory: React.FC = () => {
       inStockOnly: false,
       selectedTags: []
     };
-    setFilters(clearedFilters);
-    updateURL(clearedFilters);
+    setFilters(cleared);
+    updateURL(cleared);
+    setCurrentPage(1);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
-          <p className="mt-4 text-lg font-medium text-slate-600">Loading inventory...</p>
-        </div>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
+        <p className="mt-4 text-lg font-medium text-slate-600">Loading inventory...</p>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Store Header */}
+      {/* --- Store Header & Info --- */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -259,22 +222,19 @@ const BikeShopInventory: React.FC = () => {
         </div>
       </div>
 
-      {/* In-Store Pickup Notice */}
+      {/* --- In-Store Pickup Notice --- */}
       <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex">
-            <div className="ml-3">
-              <p className="text-sm text-blue-700">
-                <strong>In-Store Pickup Only:</strong> All items must be picked up at our NYC location. Call ahead to check availability and hold items.
-              </p>
-            </div>
-          </div>
+          <p className="text-sm text-blue-700">
+            <strong>In-Store Pickup Only:</strong> All items must be picked up at our NYC location. Call ahead to check availability and hold items.
+          </p>
         </div>
       </div>
 
+      {/* --- Main Content --- */}
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="lg:flex gap-8">
-          {/* Filters Sidebar */}
+          {/* --- Filters Sidebar --- */}
           <div className="lg:w-64 mb-6 lg:mb-0">
             <div className="lg:hidden mb-4">
               <button
@@ -287,7 +247,7 @@ const BikeShopInventory: React.FC = () => {
             </div>
 
             <div className={`space-y-6 ${showFilters ? "block" : "hidden lg:block"}`}>
-              {/* Search */}
+              {/* --- Search --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
                 <div className="relative">
@@ -302,7 +262,7 @@ const BikeShopInventory: React.FC = () => {
                 </div>
               </div>
 
-              {/* Category Filter */}
+              {/* --- Category --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
                 <select
@@ -319,7 +279,7 @@ const BikeShopInventory: React.FC = () => {
                 </select>
               </div>
 
-              {/* Brand Filter */}
+              {/* --- Brand --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <label className="block text-sm font-medium text-slate-700 mb-2">Brand</label>
                 <select
@@ -334,34 +294,32 @@ const BikeShopInventory: React.FC = () => {
                 </select>
               </div>
 
-              {/* Price Range */}
+              {/* --- Price Range --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   Price Range: ${filters.priceRange[0]} - ${filters.priceRange[1]}
                 </label>
-                <div className="space-y-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="5000"
-                    step="50"
-                    value={filters.priceRange[0]}
-                    onChange={(e) => updateFilter('priceRange', [Number(e.target.value), filters.priceRange[1]])}
-                    className="w-full"
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="5000"
-                    step="50"
-                    value={filters.priceRange[1]}
-                    onChange={(e) => updateFilter('priceRange', [filters.priceRange[0], Number(e.target.value)])}
-                    className="w-full"
-                  />
-                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="5000"
+                  step="50"
+                  value={filters.priceRange[0]}
+                  onChange={(e) => updateFilter('priceRange', [Number(e.target.value), filters.priceRange[1]])}
+                  className="w-full mb-2"
+                />
+                <input
+                  type="range"
+                  min="0"
+                  max="5000"
+                  step="50"
+                  value={filters.priceRange[1]}
+                  onChange={(e) => updateFilter('priceRange', [filters.priceRange[0], Number(e.target.value)])}
+                  className="w-full"
+                />
               </div>
 
-              {/* Availability */}
+              {/* --- Availability --- */}
               <div className="bg-white p-4 rounded-lg shadow-sm">
                 <label className="flex items-center gap-2">
                   <input
@@ -373,125 +331,83 @@ const BikeShopInventory: React.FC = () => {
                   <span className="text-sm text-slate-700">Available Only</span>
                 </label>
               </div>
-
-              {/* Active Filters */}
-              {(filters.selectedCategory !== "all" || filters.selectedBrand !== "all" || filters.searchTerm || filters.inStockOnly) && (
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-sm font-medium text-slate-700">Active Filters</h3>
-                    <button
-                      onClick={clearAllFilters}
-                      className="text-xs text-blue-600 hover:text-blue-700"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {filters.selectedCategory !== "all" && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                        {getCategoryName(filters.selectedCategory)}
-                        <button onClick={() => updateFilter('selectedCategory', 'all')}>
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                    {filters.selectedBrand !== "all" && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                        {filters.selectedBrand}
-                        <button onClick={() => updateFilter('selectedBrand', 'all')}>
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                    {filters.searchTerm && (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                        &quot;{filters.searchTerm}&quot;
-                        <button onClick={() => updateFilter('searchTerm', '')}>
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
-          {/* Product Grid */}
+          {/* --- Product Grid --- */}
           <div className="flex-1">
-            <div className="mb-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-slate-800">
-                  {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
-                </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-slate-800">
+                {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
+              </h2>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-slate-700">Items per page:</label>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                  className="p-1 border rounded"
+                >
+                  {ITEMS_PER_PAGE_OPTIONS.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredItems.map(item => {
+              {paginatedItems.map(item => {
                 const price = getDefaultPrice(item.Prices);
                 const imageUrl = item.imageUrl || "/images/placeholder.png";
                 const categoryName = getCategoryName(item.categoryID);
                 const isAvailable = item.publishToEcom === "true";
 
                 return (
-                  <div 
-                    key={item.itemID} 
+                  <div
+                    key={item.itemID}
                     className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border cursor-pointer"
                     onClick={() => handleItemClick(item.itemID)}
                   >
                     <div className="aspect-square bg-slate-100 rounded-t-lg overflow-hidden">
-                      <img
-                        src={imageUrl}
-                        alt={item.description}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={imageUrl} alt={item.description} className="w-full h-full object-cover"/>
                     </div>
                     <div className="p-4">
-                      <div className="mb-2">
-                        <span className="text-xs text-slate-500 uppercase tracking-wide">
-                          {categoryName}
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-slate-800 mb-2 line-clamp-2">
-                        {item.description}
-                      </h3>
-                      <div className="text-xs text-slate-500 mb-2">
-                        SKU: {item.systemSku}
-                      </div>
+                      <span className="text-xs text-slate-500 uppercase tracking-wide">{categoryName}</span>
+                      <h3 className="font-semibold text-slate-800 mb-2 line-clamp-2">{item.description}</h3>
+                      <div className="text-xs text-slate-500 mb-2">SKU: {item.systemSku}</div>
                       <div className="flex justify-between items-center">
-                        <div className="text-2xl font-bold text-slate-800">
-                          ${price.toFixed(2)}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            isAvailable 
-                              ? 'bg-green-100 text-green-700' 
-                              : 'bg-red-100 text-red-700'
-                          }`}>
-                            {isAvailable ? 'Available' : 'Call for Availability'}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="mt-3 pt-3 border-t">
-                        <p className="text-sm text-slate-600 mb-2">
-                          Call to check availability and hold this item
-                        </p>
-                        <button 
-                          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.location.href = 'tel:+15551234567';
-                          }}
-                        >
-                          Call Store
-                        </button>
+                        <div className="text-2xl font-bold text-slate-800">${price.toFixed(2)}</div>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                        }`}>
+                          {isAvailable ? 'Available' : 'Call for Availability'}
+                        </span>
                       </div>
                     </div>
                   </div>
                 );
               })}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-6">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                  <ChevronLeft className="h-4 w-4 inline"/>
+                </button>
+                <span className="text-sm">{currentPage} / {totalPages}</span>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                  <ChevronRight className="h-4 w-4 inline"/>
+                </button>
+              </div>
+            )}
 
             {filteredItems.length === 0 && (
               <div className="text-center py-12">
