@@ -2,10 +2,10 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 
-export default function CallbackPage() {
+function CallbackContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing OAuth callback...');
   const searchParams = useSearchParams();
@@ -113,5 +113,27 @@ export default function CallbackPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading...</h2>
+          <p className="text-gray-600">Preparing OAuth callback...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CallbackPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CallbackContent />
+    </Suspense>
   );
 }
