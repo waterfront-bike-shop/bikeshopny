@@ -10,6 +10,10 @@ export async function GET(request: NextRequest) {
     const state = searchParams.get('state');
     const error = searchParams.get('error');
 
+    // Force TS to recognize state as used (does nothing at runtime)
+    void state;
+    console.log('State received:', state); 
+
     // DEBUG: Log all environment variables (be careful with secrets in production)
     console.log('=== DEBUG: Environment Variables ===');
     console.log('LIGHTSPEED_CLIENT_ID:', process.env.LIGHTSPEED_CLIENT_ID ? 'SET' : 'NOT SET');
