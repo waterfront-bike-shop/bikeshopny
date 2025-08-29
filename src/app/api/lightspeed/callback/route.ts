@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     console.log('LIGHTSPEED_REDIRECT_URI:', process.env.LIGHTSPEED_REDIRECT_URI);
     console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
     console.log('=====================================');
+    console.log(state)
 
     // DEBUG: Log the full request URL
     console.log('Full callback URL:', request.url);
