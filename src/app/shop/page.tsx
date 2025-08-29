@@ -1,5 +1,6 @@
 // app/rentals/page.tsx
 "use client";
+export const dynamic = 'force-dynamic';
 
 import React from "react";
 import Hero from "../components/Hero";
