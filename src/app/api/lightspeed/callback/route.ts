@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const state = searchParams.get('state');
     const error = searchParams.get('error');
 
@@ -16,7 +17,6 @@ export async function GET(request: NextRequest) {
     console.log('LIGHTSPEED_REDIRECT_URI:', process.env.LIGHTSPEED_REDIRECT_URI);
     console.log('NEXTAUTH_URL:', process.env.NEXTAUTH_URL);
     console.log('=====================================');
-    console.log(state)
 
     // DEBUG: Log the full request URL
     console.log('Full callback URL:', request.url);
