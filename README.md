@@ -50,3 +50,57 @@ In Progress:
 - Lightspeed OAuth all in one folder
 - Auth for internal i.e. admin access in one folder
 - Shop/ for everything product related, rather than Lightspeed, in order to abstract the source, and leave it open for caching product locally OR for a different POS provider, etc. A user does not need to know that this data is from Lightspeed via an API call or client-side network traffic, etc.
+
+## Running with HTTPS Locally
+
+This project uses **mkcert** to generate local HTTPS certificates for development.  
+Each developer needs to generate their own certificates (they are tied to your machine’s local CA and should not be committed to git).
+
+## Running with HTTPS Locally -- mandatory for Lightspeed API
+
+This project uses **mkcert** to generate local HTTPS certificates for development.  
+Each developer needs to generate their own certificates (they are tied to your machine’s local CA and should not be committed to git).
+
+### Setup Instructions (macOS)
+
+1. **Install mkcert**
+
+   ```bash
+   brew install mkcert
+   ```
+
+2. **Install the local Certificate Authority** (one-time setup)
+
+   ```bash
+   mkcert -install
+   ```
+
+3. **Generate certificates inside the project directory**
+
+   ```bash
+   mkcert localhost 127.0.0.1 ::1
+   ```
+
+   This will create two files:
+   - `localhost+2.pem` (certificate)
+   - `localhost+2-key.pem` (private key)
+
+4. **Run the dev server**
+
+   ```bash
+   npm run dev
+   ```
+
+   The server will start with HTTPS enabled using the certificates you just generated.
+
+---
+
+### Notes
+- Do **not** commit `.pem` files to git. This is already added to `.gitignore`:
+
+  ```gitignore
+  *.pem
+  *-key.pem
+  ```
+
+- If you need to regenerate the certificates, just rerun step 3.
