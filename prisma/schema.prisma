@@ -118,12 +118,38 @@ model Item {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
   lastSyncAt      DateTime @default(now()) @map("last_sync_at")
+  featured        Boolean  @default(false)
 
   // Relations
   images ItemImage[]
   prices ItemPrice[]
+  itemTags ItemTag[] 
 
   @@map("items")
+}
+
+model Tag {
+  id          Int      @id @default(autoincrement())
+  lightspeedId Int     @unique          // store Lightspeed tag ID
+  name        String   @map("tag_name") // column in DB
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  itemTags    ItemTag[]
+
+  @@map("tags") // rename table in DB to "tags"
+}
+
+model ItemTag {
+  id      Int @id @default(autoincrement())
+  itemId  Int
+  tagId   Int
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, tagId])
+  @@map("item_tags") // rename table in DB to "item_tags"
 }
 
 // Item pricing information

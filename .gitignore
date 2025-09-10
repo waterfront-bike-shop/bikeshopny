@@ -35,6 +35,7 @@ yarn-error.log*
 # env files and secrets (can opt-in for committing if needed)
 .env*
 bikeshop_dump.sql
+neon_backup*
 
 # vercel
 .vercel
@@ -49,3 +50,4 @@ bikeshop_dump.sql
 py_util/BRM-scraper/
 .readme*
 /src/generated/prisma
+/secret_scripts
