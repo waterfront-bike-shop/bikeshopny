@@ -51,3 +51,4 @@ py_util/BRM-scraper/
 .readme*
 /src/generated/prisma
 /secret_scripts
+/logs

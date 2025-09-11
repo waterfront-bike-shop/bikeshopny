@@ -108,6 +108,13 @@ model Item {
   lightspeedId    Int      @unique @map("lightspeed_id")
   description     String   @db.Text
   categoryId      Int?     @map("category_id")
+  upc             String?   @db.VarChar(64)  // ✅ UPC
+  manufacturerSku String?   @db.VarChar(64)  // ✅ Manufacturer SKU
+  systemSku       String?   @db.VarChar(64)  // ✅ System SKU
+  customSku       String?   @db.VarChar(64)  // ✅ System SKU
+  manufacturerId  Int?      // NEW: link to Lightspeed manufacturer
+  quantity        Int?      // NEW: store available quantity
+  isAvailable     Boolean?  // NEW: quantity > 0
   defaultCost     Decimal? @map("default_cost") @db.Decimal(10, 2)
   avgCost         Decimal? @map("avg_cost") @db.Decimal(10, 2)
   discountPercent Decimal? @map("discount_percent") @db.Decimal(5, 2)
@@ -124,13 +131,15 @@ model Item {
   images ItemImage[]
   prices ItemPrice[]
   itemTags ItemTag[] 
+  category    Category? @relation(fields: [categoryId], references: [lightspeedId])
+  manufacturer Manufacturer? @relation(fields: [manufacturerId], references: [lightspeedId])
 
   @@map("items")
 }
 
 model Tag {
-  id          Int      @id @default(autoincrement())
-  lightspeedId Int     @unique          // store Lightspeed tag ID
+  id          Int      @default(autoincrement()) // internal
+  lightspeedId Int     @id @unique          // store Lightspeed tag ID
   name        String   @map("tag_name") // column in DB
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -146,25 +155,50 @@ model ItemTag {
   tagId   Int
 
   item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [lightspeedId], onDelete: Cascade)
 
   @@unique([itemId, tagId])
   @@map("item_tags") // rename table in DB to "item_tags"
 }
 
+model Manufacturer {
+  id           Int      @default(autoincrement())
+  lightspeedId Int      @id @unique
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  items Item[]
+
+  @@map("manufacturer") 
+}
 // Item pricing information
 model ItemPrice {
-  id       Int     @id @default(autoincrement())
-  itemId   Int     @map("item_id")
-  amount   Decimal @db.Decimal(10, 2)
-  useType  String  @map("use_type") @db.VarChar(50) // e.g., "Default", "MSRP", "Online"
-  useTypeId Int    @map("use_type_id")
+  id               Int      @id @default(autoincrement())  // Keep as primary key
+  itemLightspeedId Int      @map("item_lightspeed_id")     // Foreign key to Lightspeed ID
+  item             Item     @relation(fields: [itemLightspeedId], references: [lightspeedId])
+  useTypeId        Int
+  useType          String?
+  amount           Decimal?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  // Relations
-  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
-
+  @@unique([itemLightspeedId, useTypeId]) // Composite unique constraint
   @@map("item_prices")
 }
+
+model Category {
+  id          Int      @default(autoincrement())
+  lightspeedId Int     @id @unique
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       Item[]
+
+  @@map("category")
+}
+
 
 // Images for items and general use
 model Image {
