@@ -63,8 +63,9 @@ export default function HomeCards() {
         </Button>
       </Link>
 
+
       {/* Rental Card 2 */}
-      <Link href="/rentals" className={cardStyle}>
+      {/* <Link href="/rentals" className={cardStyle}>
         <div>
           <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
             <Image
@@ -87,10 +88,9 @@ export default function HomeCards() {
           </ul>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
-          {/* Online Rentals by the day */}
           Rent
         </Button>
-      </Link>
+      </Link> */}
 
       {/* Rental Card 3 */}
       <Link href="/rentals/roadbike" className={cardStyle}>
@@ -117,29 +117,30 @@ export default function HomeCards() {
         </Button>
       </Link>
 
-      {/* Parts & Accessories
+      {/* Parts & Accessories */}
       <Link href="/shop" className={cardStyle}>
         <div>
           <div className="w-full aspect-square relative rounded-xl overflow-hidden mb-4 bg-white">
             <Image
-              src="/images/we_have_parts.webp"
-              alt="Parts and Accessories"
+              // src="/images/we_have_parts.webp"
+              src="/images/ny-lock.jpg" 
+              alt="Shop our Parts and Accessories - NY LOCK"
               fill
               className="object-contain"
             />
           </div>
           <h3 className="text-lg font-semibold mb-2">
-            1000+ Parts & Accessories
+            Shop our 1000+ Parts & Accessories
           </h3>
           <p>
-            We keep a large selection of product in stock at all times for the
+            Need a New York tough lock? We have those in stock. We keep a large selection of product in stock at all times for the
             spur-of-the-moment upgrade or repair.
           </p>
         </div>
         <Button variant="default" className="mt-4 bg-blue-800 text-white">
-          Parts & Accessories
+          Shop
         </Button>
-      </Link> */}
+      </Link> 
     </section>
   );
 }
