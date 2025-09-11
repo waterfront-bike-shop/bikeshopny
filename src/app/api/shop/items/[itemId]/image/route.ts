@@ -26,7 +26,9 @@ async function fetchItemImage(
 
     if (!res.ok) {
       if (res.status === 404) return null;
-      console.error(`Failed to fetch image for item ${itemId}: ${res.statusText}`);
+      console.error(
+        `Failed to fetch image for item ${itemId}: ${res.statusText}`
+      );
       return null;
     }
 
@@ -39,16 +41,19 @@ async function fetchItemImage(
 
     return null;
   } catch (error) {
-    console.error(`[Lightspeed] Error fetching image for item ${itemId}:`, error);
+    console.error(
+      `[Lightspeed] Error fetching image for item ${itemId}:`,
+      error
+    );
     return null;
   }
 }
 
 export async function GET(
   request: NextRequest,
-  context: { params: { itemId: string } }
+  { params }: { params: { itemId: string } }
 ) {
-  const { itemId } = context.params;
+  const { itemId } = params;
 
   try {
     const userId = 1;
@@ -59,19 +64,28 @@ export async function GET(
       try {
         tokenData = await getValidLightspeedToken(userId);
       } catch (err) {
-        console.error(`[Lightspeed] Token fetch failed (attempt ${retry + 1}):`, err);
+        console.error(
+          `[Lightspeed] Token fetch failed (attempt ${retry + 1}):`,
+          err
+        );
         await sleep(2000 * (retry + 1));
       }
     }
 
     if (!tokenData) {
-      return NextResponse.json({ error: "Failed to retrieve Lightspeed credentials." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to retrieve Lightspeed credentials." },
+        { status: 500 }
+      );
     }
 
     const { accessToken, accountId } = tokenData;
 
     if (!accountId) {
-      return NextResponse.json({ error: "Account ID not found" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Account ID not found" },
+        { status: 500 }
+      );
     }
 
     const imageUrl = await fetchItemImage(itemId, accessToken, accountId);
