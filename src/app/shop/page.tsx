@@ -6,7 +6,9 @@ import React, { Suspense } from "react";
 import Hero from "../components/Hero";
 // Experimenting here...tests out images
 // import ShopItemsDemoImages from "../components/ShopItemsDemoImages";
-import BikeShopInventory from "../components/BikeShopInventory";
+// import BikeShopInventory from "../components/BikeShopInventory";
+// import LocalShopInventory from "../components/LocalShop";
+import ItemTest from "../components/ItemTest";
 // Also testing out the Lightspeed API here as well.
 // import ShopItemsDemo from "../components/ShopItemsDemo";
 
@@ -25,14 +27,18 @@ function InventoryLoadingFallback() {
 const Shop: React.FC = () => {
   return (
     <>
-      <Hero
-        headline="Over 1,000 Parts & Accessories"
-        image="/images/temp-inside-bike-shop.jpg"
-      />
+       <div className="overflow-hidden relative max-h-[30vh] md:max-h-[40vh]">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Hero
+            headline="Over 1,000 Parts & Accessories"
+            image="/images/temp-inside-bike-shop.jpg"
+          />
+        </div>
+      </div>
       <section className="py-10">
         <div className="max-w-screen-xl mx-auto px-6">
           <h1 className="text-2xl mb-2 font-bold">
-            We have 1000+ parts and accessories available.
+            SHOP: We have 1000+ parts and accessories available.
           </h1>
           <p>
             We keep a large selection of product in stock at all times for the
@@ -44,9 +50,17 @@ const Shop: React.FC = () => {
         </div>
         {/* <ShopItemsDemo /> */}
         {/* <ShopItemsDemoImages /> */}
+        {/* <LocalShopInventory />  */}
+
+
         <Suspense fallback={<InventoryLoadingFallback />}>
-          <BikeShopInventory />
+          {/* <BikeShopInventory /> 
+        */}
+        <ItemTest />
         </Suspense>
+
+          
+
       </section>
     </>
   );

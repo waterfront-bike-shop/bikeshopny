@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// Run something like this to migrate schema changes: npx prisma migrate dev --name add_category
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -101,6 +103,34 @@ model LightspeedConnection {
 
   @@map("lightspeed_connections")
 }
+
+model AllItems {
+  id        Int       @id @default(autoincrement())
+  timestamp DateTime  @default(now())
+  allItems  Json      @map("all_items")
+
+  @@map("allitems")
+}
+
+// Store pre-fetched JSON from Lightspeed API endpoints
+model ShopData {
+  id        Int       @id @default(autoincrement())
+  timestamp DateTime  @default(now())
+  type      ShopDataType
+  data      Json
+
+  @@map("shopdata")
+}
+
+enum ShopDataType {
+  allItems
+  categories
+  tags
+  manufacturers
+  allImages
+  imageDownloadFilelist
+}
+
 
 // Local cache for Lightspeed items
 model Item {
