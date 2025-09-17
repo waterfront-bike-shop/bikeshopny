@@ -18,10 +18,12 @@ function isShopDataType(value: string): value is ShopDataType {
 // ISR: revalidate every 1 day (86400 seconds)
 export const revalidate = 86400;
 
-// `context` automatically includes `params`
-export async function GET(req: NextRequest, context: { params: Record<string, string> }) {
-  const { params } = context
-  const typeParam = params.type
+// Correct Next.js GET handler — just use one argument
+export async function GET(req: NextRequest) {
+  // params are accessible via req.nextUrl.pathname or URLSearchParams
+  // for dynamic route `[type]`, you can parse from the URL
+  const url = new URL(req.url)
+  const typeParam = url.pathname.split('/').pop() || ''
 
   if (!isShopDataType(typeParam)) {
     return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
