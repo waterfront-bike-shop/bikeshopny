@@ -27,14 +27,15 @@ function InventoryLoadingFallback() {
 const Shop: React.FC = () => {
   return (
     <>
-       <div className="overflow-hidden relative max-h-[30vh] md:max-h-[40vh]">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Hero
-            headline="Over 1,000 Parts & Accessories"
-            image="/images/temp-inside-bike-shop.jpg"
-          />
-        </div>
+        {/* Crop wrapper */}
+      <div className="overflow-hidden h-[10vh] md:h-[20vh]">
+        {/* Hero takes full width/height of wrapper */}
+        <Hero
+          headline="Over 1,000 Parts & Accessories"
+          image="/images/temp-inside-bike-shop.jpg"
+        />
       </div>
+=
       <section className="py-10">
         <div className="max-w-screen-xl mx-auto px-6">
           <h1 className="text-2xl mb-2 font-bold">
