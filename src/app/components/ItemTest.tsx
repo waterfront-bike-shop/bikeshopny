@@ -46,20 +46,25 @@ const ItemTest = () => {
   const searchParams = useSearchParams();
 
   const [items, setItems] = useState<Item[]>([]);
-  const [categories, setCategories] = useState<{ categoryID: string; name: string }[]>([]);
-  const [manufacturers, setManufacturers] = useState<{ manufacturerID: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<
+    { categoryID: string; name: string }[]
+  >([]);
+  const [manufacturers, setManufacturers] = useState<
+    { manufacturerID: string; name: string }[]
+  >([]);
   const [images, setImages] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   const initialCategoryParam = searchParams.get("category");
   const defaultCategory = initialCategoryParam
-    ? initialCategoryParam.charAt(0).toUpperCase() + initialCategoryParam.slice(1)
+    ? initialCategoryParam.charAt(0).toUpperCase() +
+      initialCategoryParam.slice(1)
     : "Locks";
 
-  const [activeFeaturedCategory, setActiveFeaturedCategory] = useState<string | null>(
-    defaultCategory === "Show All" ? null : defaultCategory
-  );
+  const [activeFeaturedCategory, setActiveFeaturedCategory] = useState<
+    string | null
+  >(defaultCategory === "Show All" ? null : defaultCategory);
 
   const [filters, setFilters] = useState<Filters>({
     searchTerm: "",
@@ -89,12 +94,13 @@ const ItemTest = () => {
       setLoading(true);
 
       try {
-        const [itemsRes, categoriesRes, manufacturersRes, imagesRes] = await Promise.all([
-          fetch("/api/shopdata/allItems"),
-          fetch("/api/shopdata/categories"),
-          fetch("/api/shopdata/manufacturers"),
-          fetch("/api/shopdata/imageDownloadFilelist"),
-        ]);
+        const [itemsRes, categoriesRes, manufacturersRes, imagesRes] =
+          await Promise.all([
+            fetch("/api/shopdata/allItems"),
+            fetch("/api/shopdata/categories"),
+            fetch("/api/shopdata/manufacturers"),
+            fetch("/api/shopdata/imageDownloadFilelist"),
+          ]);
 
         const itemsJson = await itemsRes.json();
         const categoriesJson = await categoriesRes.json();
@@ -102,11 +108,14 @@ const ItemTest = () => {
         const imagesJson = await imagesRes.json();
 
         // Build image map
-        const imageList: { filename: string }[] = Array.isArray(imagesJson) ? imagesJson : imagesJson.data || [];
+        const imageList: { filename: string }[] = Array.isArray(imagesJson)
+          ? imagesJson
+          : imagesJson.data || [];
         const imageMap: Record<string, string> = {};
         imageList.forEach((img) => {
           const itemID = img.filename.split("_")[0];
-          if (!imageMap[itemID]) imageMap[itemID] = `/images/product/${img.filename}`;
+          if (!imageMap[itemID])
+            imageMap[itemID] = `/images/product/${img.filename}`;
         });
 
         setItems(itemsJson.data);
@@ -128,7 +137,9 @@ const ItemTest = () => {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center">
           <div className="inline-block w-16 h-16 border-4 border-t-blue-600 border-b-blue-600 border-l-gray-200 border-r-gray-200 rounded-full animate-spin"></div>
-          <p className="mt-4 text-lg font-medium text-slate-600">Loading inventory...</p>
+          <p className="mt-4 text-lg font-medium text-slate-600">
+            Loading inventory...
+          </p>
         </div>
       </div>
     );
@@ -138,25 +149,40 @@ const ItemTest = () => {
     .map((item) => ({ ...item, price: getDefaultPrice(item.Prices) }))
     .filter((item) => item.price > 0)
     .filter((item) => {
-      const categoryName = categories.find((c) => c.categoryID === item.categoryID)?.name;
+      const categoryName = categories.find(
+        (c) => c.categoryID === item.categoryID
+      )?.name;
 
       const matchesFeaturedCategory =
         !activeFeaturedCategory || activeFeaturedCategory === "Show All"
           ? true
-          : categoryName?.toLowerCase() === activeFeaturedCategory.toLowerCase();
+          : categoryName?.toLowerCase() ===
+            activeFeaturedCategory.toLowerCase();
 
       const matchesSelectedCategory =
-        filters.selectedCategory === "all" ? true : item.categoryID === filters.selectedCategory;
+        filters.selectedCategory === "all"
+          ? true
+          : item.categoryID === filters.selectedCategory;
 
       const matchesManufacturer =
-        filters.selectedManufacturer === "all" || item.manufacturerID === filters.selectedManufacturer;
+        filters.selectedManufacturer === "all" ||
+        item.manufacturerID === filters.selectedManufacturer;
 
       const matchesSearch =
-        !filters.searchTerm || item.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+        !filters.searchTerm ||
+        item.description
+          .toLowerCase()
+          .includes(filters.searchTerm.toLowerCase());
 
       const matchesPrice = item.price <= filters.maxPrice;
 
-      return matchesFeaturedCategory && matchesSelectedCategory && matchesManufacturer && matchesSearch && matchesPrice;
+      return (
+        matchesFeaturedCategory &&
+        matchesSelectedCategory &&
+        matchesManufacturer &&
+        matchesSearch &&
+        matchesPrice
+      );
     });
 
   const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
@@ -171,7 +197,9 @@ const ItemTest = () => {
     setFilters((prev) => ({ ...prev, selectedCategory: "all" }));
     setCurrentPage(1);
 
-    const url = newCategory ? `/shop?category=${newCategory.toLowerCase()}` : "/shop";
+    const url = newCategory
+      ? `/shop?category=${newCategory.toLowerCase()}`
+      : "/shop";
     router.replace(url);
   };
 
@@ -195,8 +223,13 @@ const ItemTest = () => {
 
               if (f.selectedCategory !== "all") {
                 setActiveFeaturedCategory(null);
-                const categoryName = categories.find((c) => c.categoryID === f.selectedCategory)?.name;
-                if (categoryName) router.replace(`/shop?category=${categoryName.toLowerCase()}`);
+                const categoryName = categories.find(
+                  (c) => c.categoryID === f.selectedCategory
+                )?.name;
+                if (categoryName)
+                  router.replace(
+                    `/shop?category=${categoryName.toLowerCase()}`
+                  );
               } else {
                 router.replace("/shop");
               }
@@ -205,9 +238,23 @@ const ItemTest = () => {
         </div>
 
         <div className="flex-1">
-          <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-6" style={{ scrollMarginTop: "80px" }}>
+          <div
+            ref={gridRef}
+            className="
+    grid 
+    grid-cols-1 
+    sm:grid-cols-2 
+    md:grid-cols-3 
+    lg:grid-cols-4 
+    gap-6
+  "
+            style={{ scrollMarginTop: "80px" }}
+          >
             {paginatedItems.map((item) => (
-              <div key={item.itemID} className="border p-4 rounded shadow-sm bg-white">
+              <div
+                key={item.itemID}
+                className="border p-4 rounded shadow-sm bg-white"
+              >
                 <div className="w-full aspect-square mb-2 overflow-hidden rounded flex items-center justify-center bg-white">
                   <img
                     src={images[item.itemID] || "/images/placeholder.png"}
@@ -234,7 +281,9 @@ const ItemTest = () => {
                 {currentPage} / {totalPages}
               </span>
               <button
-                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
                 disabled={currentPage === totalPages}
                 className="px-3 py-1 border rounded disabled:opacity-50"
               >
