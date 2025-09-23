@@ -26,7 +26,10 @@ export default function FiltersPanel({
   const [showFilters, setShowFilters] = useState(false);
 
   // Use a generic type TKey to link the key and value types
-  const update = <TKey extends keyof Filters>(key: TKey, value: Filters[TKey]) => {
+  const update = <TKey extends keyof Filters>(
+    key: TKey,
+    value: Filters[TKey]
+  ) => {
     onChange({ ...filters, [key]: value });
   };
 
@@ -46,7 +49,9 @@ export default function FiltersPanel({
       <div className={`space-y-6 ${showFilters ? "block" : "hidden lg:block"}`}>
         {/* Search */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
-          <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Search
+          </label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
             <input
@@ -61,35 +66,45 @@ export default function FiltersPanel({
 
         {/* Category */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
-          <label className="block text-sm font-medium text-slate-700 mb-2">Category</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Category
+          </label>
           <select
             value={filters.selectedCategory}
             onChange={(e) => update("selectedCategory", e.target.value)}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Categories</option>
-            {categories.map((c) => (
-              <option key={c.categoryID} value={c.categoryID}>
-                {c.name}
-              </option>
-            ))}
+            {categories
+              .slice() // make a shallow copy to avoid mutating props
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((c) => (
+                <option key={c.categoryID} value={c.categoryID}>
+                  {c.name}
+                </option>
+              ))}
           </select>
         </div>
 
         {/* Manufacturer */}
         <div className="bg-white p-4 rounded-lg shadow-sm">
-          <label className="block text-sm font-medium text-slate-700 mb-2">Manufacturer</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Manufacturer
+          </label>
           <select
             value={filters.selectedManufacturer}
             onChange={(e) => update("selectedManufacturer", e.target.value)}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All Manufacturers</option>
-            {manufacturers.map((m) => (
-              <option key={m.manufacturerID} value={m.manufacturerID}>
-                {m.name}
-              </option>
-            ))}
+            {manufacturers
+              .slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((m) => (
+                <option key={m.manufacturerID} value={m.manufacturerID}>
+                  {m.name}
+                </option>
+              ))}
           </select>
         </div>
 
@@ -101,7 +116,7 @@ export default function FiltersPanel({
           <input
             type="range"
             min="0"
-            max="5000"
+            max="3000"
             step="25"
             value={filters.maxPrice}
             onChange={(e) => update("maxPrice", Number(e.target.value))}
