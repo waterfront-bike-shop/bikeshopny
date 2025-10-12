@@ -34,7 +34,7 @@ const FEATURED_CATEGORIES = [
   "Tubes",
   "Helmets",
   "Wheels",
-  "Brakes",
+  "Brake Pads/Shoes",
   "Chain",
   "Tools",
   "Saddles",

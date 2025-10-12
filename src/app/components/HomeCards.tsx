@@ -104,7 +104,7 @@ export default function HomeCards() {
             />
           </div>
           <h3 className="text-lg font-semibold mb-2">Rent a Road Bike</h3>
-          <p>Sizes: 56cm, 54cm and 52cm</p>
+          <p>Sizes: 58cm, 56cm, 54cm and 52cm</p>
           <ul className="text-sm mt-2">
             <li>Day rate (10am–7pm):</li>
             <li>$65 Aluminum + Steel</li>
