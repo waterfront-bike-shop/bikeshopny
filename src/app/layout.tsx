@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import ClientGTM from "./components/ClientGTM";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
+import { ShopDataProvider } from "./context/ShopDataContext";
 
 export const metadata: Metadata = {
   title: "Bicycle Rentals - Waterfront Bicycle Shop Bike Rental / Repair NYC",
@@ -44,11 +45,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ShopDataProvider>
         <Header />
         <ClientGTM /> {/* client-only */}
         {children}
         <Footer />
         <Analytics />
+        </ShopDataProvider>
       </body>
     </html>
   );

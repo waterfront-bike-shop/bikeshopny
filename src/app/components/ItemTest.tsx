@@ -4,19 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import FiltersPanel from "./FiltersPanel";
 import FeaturedCategoriesNav from "./FeaturedCategoriesNav";
-
-interface ItemPrice {
-  amount: string;
-  useType: string;
-}
-
-interface Item {
-  itemID: string;
-  description: string;
-  categoryID: string;
-  manufacturerID: string;
-  Prices: { ItemPrice: ItemPrice[] };
-}
+import { useShopData, Item } from "../context/ShopDataContext"; // ✅ regular import
 
 interface Filters {
   searchTerm: string;
@@ -25,46 +13,32 @@ interface Filters {
   maxPrice: number;
 }
 
-const ITEMS_PER_PAGE = 20;
+interface ItemWithPrice extends Item {
+  price: number;
+}
 
+const ITEMS_PER_PAGE = 20;
 const FEATURED_CATEGORIES = [
-  "Show All",
-  "Tires",
-  "Locks",
-  "Tubes",
-  "Helmets",
-  "Wheels",
-  "Brake Pads/Shoes",
-  "Chain",
-  "Tools",
-  "Saddles",
-  "Lights",
+  "Show All", "Tires", "Locks", "Tubes", "Helmets", "Wheels", "Brake Pads/Shoes",
+  "Chain", "Tools", "Saddles", "Lights",
 ];
 
 const ItemTest = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { allItems, categories, manufacturers, imageMap, loading } = useShopData();
 
-  const [items, setItems] = useState<Item[]>([]);
-  const [categories, setCategories] = useState<
-    { categoryID: string; name: string }[]
-  >([]);
-  const [manufacturers, setManufacturers] = useState<
-    { manufacturerID: string; name: string }[]
-  >([]);
-  const [images, setImages] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
+  const gridRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const initialCategoryParam = searchParams.get("category");
   const defaultCategory = initialCategoryParam
-    ? initialCategoryParam.charAt(0).toUpperCase() +
-      initialCategoryParam.slice(1)
+    ? initialCategoryParam.charAt(0).toUpperCase() + initialCategoryParam.slice(1)
     : "Locks";
 
-  const [activeFeaturedCategory, setActiveFeaturedCategory] = useState<
-    string | null
-  >(defaultCategory === "Show All" ? null : defaultCategory);
+  const [activeFeaturedCategory, setActiveFeaturedCategory] = useState<string | null>(
+    defaultCategory === "Show All" ? null : defaultCategory
+  );
 
   const [filters, setFilters] = useState<Filters>({
     searchTerm: "",
@@ -73,66 +47,18 @@ const ItemTest = () => {
     maxPrice: 5000,
   });
 
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  // Smooth scroll on page change
   useEffect(() => {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [currentPage]);
 
-  // Helper to get default price
-  const getDefaultPrice = (prices: { ItemPrice: ItemPrice[] }) => {
+  const getDefaultPrice = (prices: { ItemPrice: { amount: string; useType: string }[] }) => {
     const defaultPrice = prices.ItemPrice.find((p) =>
       ["default", "msrp"].includes(p.useType.toLowerCase())
     );
     return defaultPrice ? parseFloat(defaultPrice.amount) : 0;
   };
 
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-
-      try {
-        const [itemsRes, categoriesRes, manufacturersRes, imagesRes] =
-          await Promise.all([
-            fetch("/api/shopdata/allItems"),
-            fetch("/api/shopdata/categories"),
-            fetch("/api/shopdata/manufacturers"),
-            fetch("/api/shopdata/imageDownloadFilelist"),
-          ]);
-
-        const itemsJson = await itemsRes.json();
-        const categoriesJson = await categoriesRes.json();
-        const manufacturersJson = await manufacturersRes.json();
-        const imagesJson = await imagesRes.json();
-
-        // Build image map
-        const imageList: { filename: string }[] = Array.isArray(imagesJson)
-          ? imagesJson
-          : imagesJson.data || [];
-        const imageMap: Record<string, string> = {};
-        imageList.forEach((img) => {
-          const itemID = img.filename.split("_")[0];
-          if (!imageMap[itemID])
-            imageMap[itemID] = `/images/product/${img.filename}`;
-        });
-
-        setItems(itemsJson.data);
-        setCategories(categoriesJson.data);
-        setManufacturers(manufacturersJson.data);
-        setImages(imageMap);
-      } catch (err) {
-        console.error("Error fetching items:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading)
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center">
@@ -143,26 +69,21 @@ const ItemTest = () => {
         </div>
       </div>
     );
+  }
 
-  // Filter items and compute price
-  const filteredItems = items
+  // --- Filtering logic ---
+  const filteredItems: ItemWithPrice[] = allItems
     .map((item) => ({ ...item, price: getDefaultPrice(item.Prices) }))
     .filter((item) => item.price > 0)
     .filter((item) => {
-      const categoryName = categories.find(
-        (c) => c.categoryID === item.categoryID
-      )?.name;
-
+      const categoryName = categories.find((c) => c.categoryID === item.categoryID)?.name;
       const matchesFeaturedCategory =
         !activeFeaturedCategory || activeFeaturedCategory === "Show All"
           ? true
-          : categoryName?.toLowerCase() ===
-            activeFeaturedCategory.toLowerCase();
+          : categoryName?.toLowerCase() === activeFeaturedCategory.toLowerCase();
 
       const matchesSelectedCategory =
-        filters.selectedCategory === "all"
-          ? true
-          : item.categoryID === filters.selectedCategory;
+        filters.selectedCategory === "all" ? true : item.categoryID === filters.selectedCategory;
 
       const matchesManufacturer =
         filters.selectedManufacturer === "all" ||
@@ -170,9 +91,7 @@ const ItemTest = () => {
 
       const matchesSearch =
         !filters.searchTerm ||
-        item.description
-          .toLowerCase()
-          .includes(filters.searchTerm.toLowerCase());
+        item.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
 
       const matchesPrice = item.price <= filters.maxPrice;
 
@@ -197,9 +116,7 @@ const ItemTest = () => {
     setFilters((prev) => ({ ...prev, selectedCategory: "all" }));
     setCurrentPage(1);
 
-    const url = newCategory
-      ? `/shop?category=${newCategory.toLowerCase()}`
-      : "/shop";
+    const url = newCategory ? `/shop?category=${newCategory.toLowerCase()}` : "/shop";
     router.replace(url);
   };
 
@@ -227,9 +144,7 @@ const ItemTest = () => {
                   (c) => c.categoryID === f.selectedCategory
                 )?.name;
                 if (categoryName)
-                  router.replace(
-                    `/shop?category=${categoryName.toLowerCase()}`
-                  );
+                  router.replace(`/shop?category=${categoryName.toLowerCase()}`);
               } else {
                 router.replace("/shop");
               }
@@ -240,31 +155,29 @@ const ItemTest = () => {
         <div className="flex-1">
           <div
             ref={gridRef}
-            className="
-    grid 
-    grid-cols-1 
-    sm:grid-cols-2 
-    md:grid-cols-3 
-    lg:grid-cols-4 
-    gap-6
-  "
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
             style={{ scrollMarginTop: "80px" }}
           >
             {paginatedItems.map((item) => (
-              <div
+              <a
                 key={item.itemID}
-                className="border p-4 rounded shadow-sm bg-white"
+                href={`/shop/${item.itemID}`}
+                className="block border p-4 rounded shadow-sm bg-white hover:shadow-md hover:scale-105 transition-all duration-200"
               >
                 <div className="w-full aspect-square mb-2 overflow-hidden rounded flex items-center justify-center bg-white">
                   <img
-                    src={images[item.itemID] || "/images/placeholder.png"}
+                    src={imageMap[item.itemID] || "/images/placeholder.png"}
                     alt={item.description}
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <h3 className="font-bold">{item.description}</h3>
-                <p className="mt-2 font-semibold">${item.price.toFixed(2)}</p>
-              </div>
+                <h3 className="font-bold line-clamp-2 hover:text-blue-600">
+                  {item.description}
+                </h3>
+                <p className="mt-2 font-semibold text-blue-600">
+                  ${item.price.toFixed(2)}
+                </p>
+              </a>
             ))}
           </div>
 
@@ -281,9 +194,7 @@ const ItemTest = () => {
                 {currentPage} / {totalPages}
               </span>
               <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className="px-3 py-1 border rounded disabled:opacity-50"
               >
