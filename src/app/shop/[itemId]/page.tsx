@@ -113,7 +113,7 @@ export default function ProductPage() {
 
             <div className="flex flex-col gap-3 mt-6">
               <a
-                href="tel:+1-555-0123"
+                href="tel:+1-212-414-2453"
                 className="text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
               >
                 Call to Order

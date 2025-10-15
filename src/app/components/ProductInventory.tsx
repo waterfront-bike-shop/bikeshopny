@@ -74,7 +74,7 @@ const ProductInventory = ({ itemId }: ProductInventoryProps) => {
         <strong>Stock Status:</strong>{" "}
         {inStock
           ? `${quantity} in stock`
-          : "Currently unavailable"}
+          : <div>Currently unavailable.<br /> Available through Special Order.</div>}
       </p>
     </div>
   );
