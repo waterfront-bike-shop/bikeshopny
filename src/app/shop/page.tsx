@@ -1,9 +1,8 @@
 "use client";
 export const dynamic = "force-dynamic";
-
 import React, { Suspense } from "react";
 import Hero from "../components/Hero";
-import ItemTest from "../components/ItemTest";
+import ShopItems from "../components/ShopItems";
 
 function InventoryLoadingFallback() {
   return (
@@ -28,7 +27,6 @@ const Shop: React.FC = () => {
           image="/images/temp-inside-bike-shop.jpg"
         />
       </div>
-
       <section className="py-10">
         <div className="max-w-screen-xl mx-auto px-6">
           <h1 className="text-2xl mb-2 font-bold">
@@ -40,9 +38,8 @@ const Shop: React.FC = () => {
           </p>
           <p>Stop in the shop to see what we have.</p>
         </div>
-
         <Suspense fallback={<InventoryLoadingFallback />}>
-          <ItemTest />
+          <ShopItems />
         </Suspense>
       </section>
     </>

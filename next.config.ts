@@ -3,11 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["res.cloudinary.com"], // <-- add Cloudinary host here
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/lightspeed-retail/image/upload/**",
+      },
+    ],
   },
 };
 
 module.exports = nextConfig;
-
 
 export default nextConfig;

@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import FiltersPanel from "./FiltersPanel";
 import FeaturedCategoriesNav from "./FeaturedCategoriesNav";
-import { useShopData, Item } from "../context/ShopDataContext"; // ✅ regular import
+import { useShopData, Item } from "../context/ShopDataContext";
+import Image from "next/image";
 
 interface Filters {
   searchTerm: string;
@@ -18,15 +20,16 @@ interface ItemWithPrice extends Item {
 }
 
 const ITEMS_PER_PAGE = 20;
+// This is a DEFAULT. TODO: This should be a ternary, where this loads up first, then the CMS is queried to see if there is an updated list. 
 const FEATURED_CATEGORIES = [
   "Show All", "Tires", "Locks", "Tubes", "Helmets", "Wheels", "Brake Pads/Shoes",
   "Chain", "Tools", "Saddles", "Lights",
 ];
 
-const ItemTest = () => {
+const ShopItems = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { allItems, categories, manufacturers, imageMap, loading } = useShopData();
+  const { allItems, categories, manufacturers, loading } = useShopData();
 
   const gridRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,9 +54,9 @@ const ItemTest = () => {
     gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [currentPage]);
 
-  const getDefaultPrice = (prices: { ItemPrice: { amount: string; useType: string }[] }) => {
-    const defaultPrice = prices.ItemPrice.find((p) =>
-      ["default", "msrp"].includes(p.useType.toLowerCase())
+  const getDefaultPrice = (prices: { amount: string; useType: string }[]) => {
+    const defaultPrice = prices.find((p) =>
+      ["default", "msrp", "online"].includes(p.useType.toLowerCase())
     );
     return defaultPrice ? parseFloat(defaultPrice.amount) : 0;
   };
@@ -73,7 +76,7 @@ const ItemTest = () => {
 
   // --- Filtering logic ---
   const filteredItems: ItemWithPrice[] = allItems
-    .map((item) => ({ ...item, price: getDefaultPrice(item.Prices) }))
+    .map((item) => ({ ...item, price: getDefaultPrice(item.prices) }))
     .filter((item) => item.price > 0)
     .filter((item) => {
       const categoryName = categories.find((c) => c.categoryID === item.categoryID)?.name;
@@ -158,27 +161,34 @@ const ItemTest = () => {
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
             style={{ scrollMarginTop: "80px" }}
           >
-            {paginatedItems.map((item) => (
-              <a
-                key={item.itemID}
-                href={`/shop/${item.itemID}`}
-                className="block border p-4 rounded shadow-sm bg-white hover:shadow-md hover:scale-105 transition-all duration-200"
-              >
-                <div className="w-full aspect-square mb-2 overflow-hidden rounded flex items-center justify-center bg-white">
-                  <img
-                    src={imageMap[item.itemID] || "/images/placeholder.png"}
-                    alt={item.description}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <h3 className="font-bold line-clamp-2 hover:text-blue-600">
-                  {item.description}
-                </h3>
-                <p className="mt-2 font-semibold text-blue-600">
-                  ${item.price.toFixed(2)}
-                </p>
-              </a>
-            ))}
+            {paginatedItems.map((item) => {
+              // Get first image or placeholder
+              const imageUrl = item.images.length > 0 ? item.images[0] : "/images/placeholder.png";
+              
+              return (
+                <Link
+                  key={item.itemID}
+                  href={`/shop/${item.itemID}`}
+                  className="block border p-4 rounded shadow-sm bg-white hover:shadow-md hover:scale-105 transition-all duration-200"
+                >
+                  <div className="w-full aspect-square mb-2 overflow-hidden rounded flex items-center justify-center bg-white relative">
+                    <Image
+                      src={imageUrl}
+                      alt={item.description}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    />
+                  </div>
+                  <h3 className="font-bold line-clamp-2 hover:text-blue-600">
+                    {item.description}
+                  </h3>
+                  <p className="mt-2 font-semibold text-blue-600">
+                    ${item.price.toFixed(2)}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
 
           {totalPages > 1 && (
@@ -208,4 +218,4 @@ const ItemTest = () => {
   );
 };
 
-export default ItemTest;
+export default ShopItems;

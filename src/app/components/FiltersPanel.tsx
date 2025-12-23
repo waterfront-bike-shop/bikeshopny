@@ -109,7 +109,8 @@ export default function FiltersPanel({
         </div>
 
         {/* Price */}
-        <div className="bg-white p-4 rounded-lg shadow-sm">
+        {/* Removed for now, as it seems not essential */}
+        {/* <div className="bg-white p-4 rounded-lg shadow-sm">
           <label className="block text-sm font-medium text-slate-700 mb-2">
             Max Price: ${filters.maxPrice}
           </label>
@@ -122,7 +123,7 @@ export default function FiltersPanel({
             onChange={(e) => update("maxPrice", Number(e.target.value))}
             className="w-full"
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

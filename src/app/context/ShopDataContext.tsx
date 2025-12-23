@@ -3,23 +3,22 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 // --- Types ---
-export interface ItemPrice {
-  amount: string;
-  useType: string;
-}
-
 export interface Item {
   itemID: string;
+  systemSku: string;
   description: string;
   categoryID: string;
   manufacturerID: string;
-  Prices: { ItemPrice: ItemPrice[] };
-
-  // Optional fields for product page
   modelYear?: string;
   upc?: string;
   manufacturerSku?: string;
-  systemSku?: string;
+  customSku?: string;
+  qoh: number; // Total quantity on hand
+  images: string[]; // Array of Cloudinary URLs
+  prices: {
+    amount: string;
+    useType: string;
+  }[];
 }
 
 export interface Category {
@@ -36,7 +35,6 @@ export interface ShopDataContextType {
   allItems: Item[];
   categories: Category[];
   manufacturers: Manufacturer[];
-  imageMap: Record<string, string>;
   loading: boolean;
   error: string | null;
   refreshData: () => void;
@@ -53,7 +51,6 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
   const [allItems, setAllItems] = useState<Item[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
-  const [imageMap, setImageMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,34 +59,21 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
     setError(null);
 
     try {
-      const [itemsRes, categoriesRes, manufacturersRes, imagesRes] = await Promise.all([
+      const [itemsRes, categoriesRes, manufacturersRes] = await Promise.all([
         fetch("/api/shopdata/allItems"),
         fetch("/api/shopdata/categories"),
         fetch("/api/shopdata/manufacturers"),
-        fetch("/api/shopdata/imageDownloadFilelist"),
       ]);
 
-      const [itemsJson, categoriesJson, manufacturersJson, imagesJson] = await Promise.all([
+      const [itemsJson, categoriesJson, manufacturersJson] = await Promise.all([
         itemsRes.json(),
         categoriesRes.json(),
         manufacturersRes.json(),
-        imagesRes.json(),
       ]);
-
-      const imageList: { filename: string }[] = Array.isArray(imagesJson)
-        ? imagesJson
-        : imagesJson.data || [];
-
-      const newImageMap: Record<string, string> = {};
-      imageList.forEach((img) => {
-        const itemID = img.filename.split("_")[0];
-        if (!newImageMap[itemID]) newImageMap[itemID] = `/images/product/${img.filename}`;
-      });
 
       setAllItems(itemsJson.data || []);
       setCategories(categoriesJson.data || []);
       setManufacturers(manufacturersJson.data || []);
-      setImageMap(newImageMap);
     } catch (err) {
       console.error("Error fetching shop data:", err);
       setError("Failed to fetch shop data.");
@@ -108,7 +92,6 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
         allItems,
         categories,
         manufacturers,
-        imageMap,
         loading,
         error,
         refreshData: fetchData,

@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useShopData } from "@/app/context/ShopDataContext"; // ✅ import context
+import { useShopData } from "@/app/context/ShopDataContext";
 import ProductInventory from "@/app/components/ProductInventory";
 
 export default function ProductPage() {
   const params = useParams();
-  const { allItems, imageMap, loading } = useShopData();
+  const { allItems, loading } = useShopData();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // Ensure itemId is a string
   const itemId = Array.isArray(params?.itemId) ? params.itemId[0] : params?.itemId;
@@ -47,15 +49,18 @@ export default function ProductPage() {
     );
   }
 
-  // Safely index imageMap with string
-  const imageUrl = imageMap[itemId] || null;
+  // Get images or use placeholder
+  const images = item.images.length > 0 ? item.images : ["/images/placeholder.png"];
+  const currentImage = images[selectedImageIndex];
 
+  // Get price (prefer Online, fallback to Default)
   const price =
-    item.Prices?.ItemPrice?.find((p) => p.useType === "Online")?.amount ||
-    item.Prices?.ItemPrice?.[0]?.amount;
+    item.prices.find((p) => p.useType === "Online")?.amount ||
+    item.prices.find((p) => p.useType === "Default")?.amount ||
+    item.prices[0]?.amount;
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl min-h-[80vh] flex flex-col">
+    <div className="container mx-auto p-4 max-w-4xl min-h-[80vh] flex flex-col">
       <Link
         href="/shop"
         className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
@@ -67,21 +72,49 @@ export default function ProductPage() {
         <h1 className="text-3xl font-bold mb-4 p-4">{item.description}</h1>
 
         <div className="flex flex-col md:flex-row gap-8 p-4">
-          {/* Product Image */}
+          {/* Product Images */}
           <div className="md:flex-shrink-0">
-            {imageUrl ? (
+            {/* Main Image */}
+            <div className="relative w-[400px] h-[400px] bg-gray-100 rounded-lg overflow-hidden">
               <Image
-                src={imageUrl}
+                src={currentImage}
                 alt={item.description || "Product image"}
-                width={300}
-                height={300}
-                className="rounded-lg shadow-md object-cover h-auto w-auto"
+                fill
+                className="object-contain"
                 priority
               />
-            ) : (
-              <div className="w-[300px] h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                No Image Available
+            </div>
+
+            {/* Image Thumbnails - Only show if multiple images */}
+            {images.length > 1 && (
+              <div className="flex gap-2 mt-4 overflow-x-auto">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative w-20 h-20 flex-shrink-0 rounded border-2 overflow-hidden transition-all ${
+                      selectedImageIndex === index
+                        ? "border-blue-600"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${item.description} view ${index + 1}`}
+                      fill
+                      className="object-contain"
+                      sizes="80px"
+                    />
+                  </button>
+                ))}
               </div>
+            )}
+
+            {/* Image Counter */}
+            {images.length > 1 && (
+              <p className="text-center text-sm text-gray-500 mt-2">
+                Image {selectedImageIndex + 1} of {images.length}
+              </p>
             )}
           </div>
 
@@ -102,12 +135,18 @@ export default function ProductPage() {
                 </h2>
                 <ul className="space-y-2 text-gray-700">
                   <li><strong>Item ID:</strong> {item.itemID}</li>
-                  <li><strong>UPC:</strong> {item.upc || "N/A"}</li>
-                  <li><strong>Manufacturer SKU:</strong> {item.manufacturerSku || "N/A"}</li>
-                  <li><strong>System SKU:</strong> {item.systemSku || "N/A"}</li>
+                  <li><strong>System SKU:</strong> {item.systemSku}</li>
+                  {item.customSku && (
+                    <li><strong>Custom SKU:</strong> {item.customSku}</li>
+                  )}
+                  {item.upc && <li><strong>UPC:</strong> {item.upc}</li>}
+                  {item.manufacturerSku && (
+                    <li><strong>Manufacturer SKU:</strong> {item.manufacturerSku}</li>
+                  )}
                 </ul>
               </div>
 
+              {/* Live Inventory Component */}
               <ProductInventory itemId={itemId} />
             </div>
 
@@ -116,7 +155,7 @@ export default function ProductPage() {
                 href="tel:+1-212-414-2453"
                 className="text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
               >
-                Call to Order
+                Call to Order: (212) 414-2453
               </a>
               <Link
                 href="/shop"

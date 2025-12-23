@@ -6,6 +6,8 @@ interface ProductInventoryProps {
   itemId: string;
 }
 
+// This gets the current inventory of a product from its ID, live from the Lightspeed database witout caching.
+
 const ProductInventory = ({ itemId }: ProductInventoryProps) => {
   const [quantity, setQuantity] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,13 +70,16 @@ const ProductInventory = ({ itemId }: ProductInventoryProps) => {
     >
       <p
         className={`text-sm font-semibold ${
-          inStock ? "text-green-700" : "text-red-700"
+          // inStock ? "text-green-700" : "text-red-700"
+          inStock ? "text-green-700" : "text-orange-700"
         }`}
       >
         <strong>Stock Status:</strong>{" "}
         {inStock
           ? `${quantity} in stock`
-          : <div>Currently unavailable.<br /> Available through Special Order.</div>}
+          // : <div>Currently unavailable.<br /> Available through Special Order.</div>
+          : <div>Call store for availabilty.</div>
+          }
       </p>
     </div>
   );
