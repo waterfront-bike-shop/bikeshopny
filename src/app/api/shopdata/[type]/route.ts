@@ -15,6 +15,8 @@ function isShopDataType(value: string): value is ShopDataType {
   return Object.values(ShopDataType).includes(value as ShopDataType)
 }
 
+export const runtime = 'nodejs';
+export const maxDuration = 60; // 60 seconds for Pro plan
 export const revalidate = 86400; // 24 hours
 
 // Types for Lightspeed API response
