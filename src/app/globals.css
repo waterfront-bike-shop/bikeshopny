@@ -138,3 +138,44 @@
   }
 }
 
+/* Marketing copy */
+.lightspeed-description p {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+/* Feature list */
+.lightspeed-features ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.lightspeed-features li {
+  margin: 0.4rem 0;
+  line-height: 1.45;
+}
+
+/* Kill random <br> spam */
+.lightspeed-description br,
+.lightspeed-features br {
+  display: none;
+}
+
+/* Feature list with visible bullets */
+.lightspeed-features ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.lightspeed-features li {
+  display: list-item;
+  margin: 0.4rem 0;
+  line-height: 1.45;
+}
+
+/* Make bullets visible */
+.lightspeed-features li::marker {
+  color: #374151; /* gray-700 */
+  font-size: 0.9rem;
+}

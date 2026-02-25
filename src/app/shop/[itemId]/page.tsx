@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useShopData } from "@/app/context/ShopDataContext";
 import ProductInventory from "@/app/components/ProductInventory";
+import ProductDescription from "@/app/components/ProductDescription";
 
 export default function ProductPage() {
   const params = useParams();
@@ -75,7 +76,7 @@ export default function ProductPage() {
           {/* Product Images */}
           <div className="md:flex-shrink-0">
             {/* Main Image */}
-            <div className="relative w-[400px] h-[400px] bg-gray-100 rounded-lg overflow-hidden">
+            <div className="relative w-[400px] h-[400px] bg-white rounded-lg overflow-hidden">
               <Image
                 src={currentImage}
                 alt={item.description || "Product image"}
@@ -145,6 +146,8 @@ export default function ProductPage() {
                   )}
                 </ul>
               </div>
+               {/* Component that pulls the Description from the Lightspeed e-commerce API endpoint */}
+              <ProductDescription itemId={itemId} />
 
               {/* Live Inventory Component */}
               <ProductInventory itemId={itemId} />
@@ -155,7 +158,7 @@ export default function ProductPage() {
                 href="tel:+1-212-414-2453"
                 className="text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
               >
-                Call to Order: (212) 414-2453
+                Buy in Store Only<br></br>Call to Double Check Stock: (212) 414-2453
               </a>
               <Link
                 href="/shop"

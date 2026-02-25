@@ -170,6 +170,8 @@ async function fetchAllLightspeedItems(): Promise<SimplifiedItem[]> {
     }
 
     const data = await response.json();
+    // DEBUG -- leave in for easy search, for now.
+    // console.log(data)
     
     // Log total count on first request
     if (pageCount === 1 && data['@attributes']) {
