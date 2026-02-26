@@ -1,6 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
 // --- Types ---
 export interface Item {
@@ -41,7 +47,9 @@ export interface ShopDataContextType {
 }
 
 // --- Context ---
-const ShopDataContext = createContext<ShopDataContextType | undefined>(undefined);
+const ShopDataContext = createContext<ShopDataContextType | undefined>(
+  undefined,
+);
 
 interface ShopDataProviderProps {
   children: ReactNode;
@@ -56,32 +64,41 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
 
   const fetchData = async () => {
     setLoading(true);
-    setError(null);
 
     try {
-      const [itemsRes, categoriesRes, manufacturersRes] = await Promise.all([
+      const [itemsRes, catsRes, mfrsRes] = await Promise.all([
         fetch("/api/shopdata/allItems"),
         fetch("/api/shopdata/categories"),
         fetch("/api/shopdata/manufacturers"),
       ]);
 
-      const [itemsJson, categoriesJson, manufacturersJson] = await Promise.all([
-        itemsRes.json(),
-        categoriesRes.json(),
-        manufacturersRes.json(),
-      ]);
+      const itemsJson = await itemsRes.json();
+      const catsJson = await catsRes.json();
+      const mfrsJson = await mfrsRes.json();
 
       setAllItems(itemsJson.data || []);
-      setCategories(categoriesJson.data || []);
-      setManufacturers(manufacturersJson.data || []);
+      setCategories(catsJson.data || []);
+
+      // --- STALE-WHILE-REVALIDATE LOGIC ---
+      // Step A: If we have a cached list, show it immediately
+      if (mfrsJson.cached && mfrsJson.cached.length > 0) {
+        setManufacturers(mfrsJson.cached);
+      }
+
+      // Step B: Update/Overwrite with the live list
+      if (mfrsJson.data && mfrsJson.data.length > 0) {
+        setManufacturers(mfrsJson.data);
+      }
     } catch (err) {
-      console.error("Error fetching shop data:", err);
-      setError("Failed to fetch shop data.");
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
   useEffect(() => {
     fetchData();
   }, []);

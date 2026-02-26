@@ -80,6 +80,31 @@ interface SimplifiedItem {
   }[];
 }
 
+// --- Manufacturer 'BRANDS' Interfaces ---
+// REF: https://developers.lightspeedhq.com/retail/endpoints/Manufacturer/
+
+interface LightspeedManufacturer {
+  manufacturerID: string | number;
+  name: string;
+  createTime?: string;
+  timeStamp?: string;
+}
+
+interface LightspeedResponse {
+  "@attributes": {
+    count: string;
+    next: string;
+    previous: string;
+  };
+  Manufacturer?: LightspeedManufacturer | LightspeedManufacturer[];
+}
+
+interface SimplifiedManufacturer {
+  manufacturerID: string;
+  name: string;
+}
+
+
 // Build full Cloudinary URL from image data
 function buildImageUrl(image: LightspeedImage): string {
   const { baseImageURL, publicID } = image;
@@ -139,6 +164,57 @@ function simplifyItem(item: LightspeedItem): SimplifiedItem {
   };
 }
 
+async function fetchLiveManufacturers(): Promise<SimplifiedManufacturer[]> {
+  const userId = 1; 
+  const { accessToken, accountId } = await getValidLightspeedToken(userId);
+  
+  const allManufacturers: SimplifiedManufacturer[] = [];
+  // Start with the base URL + limit of 100
+  let nextUrl: string | null = `https://api.lightspeedapp.com/API/V3/Account/${accountId}/Manufacturer.json?limit=100`;
+  
+  console.log('[Lightspeed] Starting paginated manufacturer fetch...');
+
+  while (nextUrl) {
+    const response = await fetch(nextUrl, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Lightspeed Manufacturer API failed: ${response.status}`);
+    }
+
+    const data: LightspeedResponse = await response.json();
+    
+    // Extract records safely
+    const raw = data.Manufacturer 
+      ? (Array.isArray(data.Manufacturer) ? data.Manufacturer : [data.Manufacturer])
+      : [];
+
+    // Map to simplified structure and push to our master list
+    const simplified = raw.map((m) => ({
+      manufacturerID: String(m.manufacturerID),
+      name: m.name
+    }));
+
+    allManufacturers.push(...simplified);
+
+    // Get the next URL. 
+    // Handle the case where Lightspeed returns an empty string "" instead of null
+    const attrNext = data["@attributes"]?.next;
+    nextUrl = attrNext && attrNext !== "" ? attrNext : null;
+
+    // Be a good citizen: brief pause if we have more pages to fetch
+    if (nextUrl) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
+
+  console.log(`[Lightspeed] Successfully fetched ${allManufacturers.length} manufacturers total.`);
+  return allManufacturers;
+}
 // Fetch all pages from Lightspeed with in-stock, ecom-published items
 async function fetchAllLightspeedItems(): Promise<SimplifiedItem[]> {
   const userId = 1;
@@ -216,40 +292,41 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Fetch allItems directly from Lightspeed API
     if (typeParam === 'allItems') {
-      console.log('[ShopData] Fetching allItems from Lightspeed API...');
       const items = await fetchAllLightspeedItems();
-      
-      // Format response to match what Context expects: { data: [...] }
-      return NextResponse.json({
-        data: items,
-        timestamp: new Date().toISOString(),
-        type: 'allItems',
-      });
+      return NextResponse.json({ data: items, type: 'allItems' });
     }
 
-    // For all other types, use cached data from database
-    console.log(`[ShopData] Fetching ${typeParam} from cache...`);
+    // SPECIAL CASE: Manufacturers
+    if (typeParam === 'manufacturers') {
+      // 1. Get the "Saved" list from Prisma immediately
+      const cached = await prisma.shopData.findFirst({
+        where: { type: 'manufacturers' },
+        orderBy: { timestamp: 'desc' },
+      });
+
+      // 2. Try to get "Live" data
+      try {
+        const liveData = await fetchLiveManufacturers();
+        return NextResponse.json({
+          data: liveData,      // The fresh list
+          cached: cached?.data || [], // The saved list
+          type: 'manufacturers'
+        });
+      } catch (err) {
+        // If API fails, just return the cache
+        return NextResponse.json(cached || { data: [] });
+      }
+    }
+
+    // Standard fallback for Categories/Tags
     const data = await prisma.shopData.findFirst({
       where: { type: typeParam },
       orderBy: { timestamp: 'desc' },
     });
+    return NextResponse.json(data || { data: [] });
 
-    if (!data) {
-      return NextResponse.json({ error: 'No data found' }, { status: 404 });
-    }
-
-    return NextResponse.json(data);
-    
   } catch (error) {
-    console.error('[ShopData] Error fetching data:', error);
-    return NextResponse.json(
-      { 
-        error: 'Failed to fetch data', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
   }
 }
