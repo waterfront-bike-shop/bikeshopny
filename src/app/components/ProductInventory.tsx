@@ -68,7 +68,7 @@ const ProductInventory = ({ itemId }: ProductInventoryProps) => {
           : "bg-red-50 border-red-200"
       }`}
     >
-      <p
+      <div
         className={`text-sm font-semibold ${
           // inStock ? "text-green-700" : "text-red-700"
           inStock ? "text-green-700" : "text-orange-700"
@@ -80,7 +80,7 @@ const ProductInventory = ({ itemId }: ProductInventoryProps) => {
           // : <div>Currently unavailable.<br /> Available through Special Order.</div>
           : <div>Call store for availabilty.</div>
           }
-      </p>
+      </div>
     </div>
   );
 };
