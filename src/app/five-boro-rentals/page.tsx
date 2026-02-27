@@ -39,7 +39,7 @@ const Rentals: React.FC = () => {
         </div>
       )}
       <iframe
-        src="https://us.bikerentalmanager.com/book.html?shop=waterfrontbicycleshop&event_ref=5%20Boro%20Bike%20Tour%202025"
+        src="https://us.bikerentalmanager.com/book.html?shop=waterfrontbicycleshop&event_ref=5%20Boro%20Bike%20Tour%202026"
         title="5 Boro Bike Tour Rentals - Waterfront Bicycle Shop"
         className={cn("w-full h-[100vh] border-0", isLoading ? "opacity-0" : "opacity-100")}
         onLoad={() => setIsLoading(false)}
