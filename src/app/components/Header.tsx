@@ -50,6 +50,12 @@ const Header = () => {
             Rent a Bike
           </Button>
         </Link>
+
+        <Link href="/five-boro-rentals" passHref>
+          <Button variant="default" className="bg-blue-800 text-white">
+            5 Boro Rentals
+          </Button>
+        </Link>
       </nav>
 
       {/* Mobile Menu */}
@@ -78,6 +84,16 @@ const Header = () => {
                   onClick={() => setOpen(false)}
                 >
                   Rent a Bike
+                </Button>
+              </Link>
+
+              <Link className="pl-2" href="/five-boro-rentals" passHref>
+                <Button
+                  variant = "default"
+                  className="mt-4 bg-blue-800 text-white"
+                  onClick={() => setOpen(false)}
+                >
+                  5 Boro Rentals
                 </Button>
               </Link>
             </div>
