@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Hero from "../components/Hero";
 import BikeCards from "../components/BikeCards";
 import { X } from "phosphor-react";
+import Link from "next/link";
 
 // Helper function to check if the current date/time is within the event window
 const isAlertActive = () => {
@@ -74,7 +75,15 @@ const RentalsClient: React.FC = () => {
         >
           In Store Rental
         </button>
+        <Link href="/five-boro-rentals" passHref>
+          <button className="px-4 py-2 rounded  bg-red-500 text-white hover:bg-red-600">
+            5 Boro Bike Tour Rentals
+          </button>
+        </Link>
       </div>
+
+       
+
 
       {/* Content rendering */}
       <div>

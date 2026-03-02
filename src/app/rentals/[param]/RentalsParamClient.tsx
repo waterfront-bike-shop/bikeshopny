@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import Hero from "../../components/Hero";
 import BikeCards from "../../components/BikeCards";
+import Link from "next/link";
 
 const paramUrlDict = [
   {
@@ -81,12 +82,18 @@ export default function RentalsParamClient() {
         >
           In Store Rental
         </button>
+
+        <Link href="/five-boro-rentals" passHref>
+          <button className="px-4 py-2 rounded  bg-red-500 text-white hover:bg-red-600">
+            5 Boro Bike Tour Rentals
+          </button>
+        </Link>
       </div>
 
       <div>
         <h3 className="text-center border border-gray-800 rounded m-3">
-          Note: For same-day booking call the store at 212-414-2453 to reserve
-          a bike. Online booking ends the previous day.
+          Note: For same-day booking call the store at 212-414-2453 to reserve a
+          bike. Online booking ends the previous day.
         </h3>
       </div>
       {/* <div>
@@ -142,9 +149,7 @@ export default function RentalsParamClient() {
                 <h1 className="text-2xl mb-2 mt-6 font-bold">Hours</h1>
                 <p>Monday - Sunday 10:00 am - 7:00 pm</p>
 
-                <h1 className="text-2xl mt-6 font-bold">
-                  Bicycles for Rent:
-                </h1>
+                <h1 className="text-2xl mt-6 font-bold">Bicycles for Rent:</h1>
               </div>
               <BikeCards />
             </section>
