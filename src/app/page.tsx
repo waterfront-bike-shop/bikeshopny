@@ -37,14 +37,16 @@ const HomePage: FC = () => {
       {/* /////////////////////////////  */}
 
       <Hero
-        headline="Rent a bike for the 2026 5 Boro Bike Tour"
+        headline="SOLD OUT - Rent a bike for the 2026 5 Boro Bike Tour"
         subheadings={[
           "$89.99 per bike for Sat. May 2, and Sun. May 3 two day minimum",
           "(Road bikes $200)",
         ]}
         href="/five-boro-rentals"
         // button_text="Book your 5 Boro Bicycle Rental"
-        button_text="Book by May 2 at 5pm (Pickup by 6:45pm)"
+
+        // button_text="Book by May 2 at 5pm (Pickup by 6:45pm)"
+        button_text="SOLD OUT"
         image="/images/5-boro-riders.jpg"
       />
       <HomeCards />

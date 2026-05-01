@@ -1,12 +1,9 @@
-// app/components/HeroIcon.tsx
-
+// app/components/Hero.tsx
 "use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 // Flexible Hero image with Headline, and optional sub headline, and optional button/link.
-
 interface HeroProps {
   headline: string;       // Add in the large headline text to layer over the image. Idea: Default to page name, i.e "About"
   subheadings?: string[]; // Optional: Use only if needed.
@@ -22,6 +19,20 @@ const Hero: React.FC<HeroProps> = ({
   image,
   button_text,
 }) => {
+  // Split headline to highlight "SOLD OUT"
+  const renderHeadline = (text: string) => {
+    const parts = text.split(/(SOLD OUT)/);
+    return parts.map((part, idx) =>
+      part === "SOLD OUT" ? (
+        <span key={idx} className="text-red-600">
+          {part}
+        </span>
+      ) : (
+        <span key={idx}>{part}</span>
+      )
+    );
+  };
+
   return (
     <section
       className="relative w-full h-[60vh] md:h-[75vh] bg-cover bg-center"
@@ -29,9 +40,8 @@ const Hero: React.FC<HeroProps> = ({
     >
       <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
         <h1 className="text-white text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
-          {headline}
+          {renderHeadline(headline)}
         </h1>
-
         {subheadings?.map((line, idx) => (
           <h3
             key={idx}
@@ -40,7 +50,6 @@ const Hero: React.FC<HeroProps> = ({
             {line}
           </h3>
         ))}
-
         {href && button_text && (
           <Link href={href}>
             <Button className="bg-red-600 hover:bg-red-700 text-white text-lg px-6 py-3 rounded-xl shadow-md">

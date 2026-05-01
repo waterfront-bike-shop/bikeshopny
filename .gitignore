@@ -51,3 +51,8 @@ py_util/BRM-scraper/
 /go_util
 # PRISMA stuff
 /src/generated 
+
+bikeshop_dump.sql
+logs/
+neon_backup_2025-09-09_21-23-20.dump
+secret_scripts/
