@@ -10,13 +10,13 @@ const HomePage: FC = () => {
       {/* DEFAULT Header                 */}
       {/* /////////////////////////////  */}
 
-      {/* <Hero
+      <Hero
         headline="Welcome to NYC's Bike Shop on the Hudson River!"
         subheadings={["Rentals, Repairs and Parts & Accessories."]}
         href="/rentals"
         button_text="Rent a bike online"
         image="/images/hudson_river_aerial_view.jpg"
-      /> */}
+      />
 
       {/* /////////////////////////////      */}
       {/* Day of 5 Boro promoting Road Bikes */}
@@ -36,7 +36,7 @@ const HomePage: FC = () => {
       {/* Hero for the 5 Boro Bike Tour  */}
       {/* /////////////////////////////  */}
 
-      <Hero
+      {/* <Hero
         headline="SOLD OUT - Rent a bike for the 2026 5 Boro Bike Tour"
         subheadings={[
           "$89.99 per bike for Sat. May 2, and Sun. May 3 two day minimum",
@@ -48,7 +48,7 @@ const HomePage: FC = () => {
         // button_text="Book by May 2 at 5pm (Pickup by 6:45pm)"
         button_text="SOLD OUT"
         image="/images/5-boro-riders.jpg"
-      />
+      /> */}
       <HomeCards />
     </>
   );
