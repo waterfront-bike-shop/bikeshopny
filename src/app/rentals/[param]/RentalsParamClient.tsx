@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import Hero from "../../components/Hero";
 import BikeCards from "../../components/BikeCards";
-import Link from "next/link";
+// import Link from "next/link";
 
 const paramUrlDict = [
   {
