@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Hero from "../components/Hero";
 import BikeCards from "../components/BikeCards";
 import { X } from "phosphor-react";
-import Link from "next/link";
+// import Link from "next/link";
 
 // Helper function to check if the current date/time is within the event window
 const isAlertActive = () => {
