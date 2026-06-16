@@ -74,7 +74,7 @@ export class LightspeedTokenManager {
    */
   static async refreshToken(userId: number, refreshToken: string): Promise<LightspeedToken | null> {
     try {
-      const tokenResponse = await fetch('https://cloud.lightspeedapp.com/auth/oauth/token', {
+      const tokenResponse = await fetch('https://cloud.lightspeedapp.com/oauth/access_token.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
