@@ -44,6 +44,7 @@ export default function DashboardPage() {
     });
   const [loading, setLoading] = useState(true);
   const [connectingToLightspeed, setConnectingToLightspeed] = useState(false);
+  const [syncingNow, setSyncingNow] = useState(false);
   const [oauthMessage, setOauthMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -140,17 +141,37 @@ export default function DashboardPage() {
 
   const handleSyncNow = async () => {
     try {
+      setSyncingNow(true);
       const res = await fetch("/api/lightspeed/sync", {
         method: "POST",
+        credentials: "include",
       });
       if (res.ok) {
-        alert("Sync started!");
-        checkLightspeedStatus();
+        setOauthMessage({
+          type: "success",
+          text: "Lightspeed catalog synced successfully!",
+        });
+        setTimeout(() => checkLightspeedStatus(), 1000);
+      } else if (res.status === 403) {
+        setOauthMessage({
+          type: "error",
+          text: "Admin access required to sync.",
+        });
       } else {
-        alert("Failed to start sync.");
+        const errorData = await res.json();
+        setOauthMessage({
+          type: "error",
+          text: `Sync failed: ${errorData.error || "Unknown error"}`,
+        });
       }
-    } catch {
-      alert("Sync error.");
+    } catch (error) {
+      console.error("Sync error:", error);
+      setOauthMessage({
+        type: "error",
+        text: "Failed to start sync. Please try again.",
+      });
+    } finally {
+      setSyncingNow(false);
     }
   };
 
@@ -314,8 +335,13 @@ export default function DashboardPage() {
                         variant="outline"
                         size="sm"
                         onClick={handleSyncNow}
+                        disabled={syncingNow}
+                        className="flex items-center gap-2"
                       >
-                        Sync Now
+                        {syncingNow && (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                        )}
+                        {syncingNow ? "Syncing..." : "Sync Now"}
                       </Button>
                       <Button variant="outline" size="sm">
                         View Products

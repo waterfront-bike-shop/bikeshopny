@@ -80,12 +80,12 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
       setCategories(catsJson.data || []);
 
       // --- STALE-WHILE-REVALIDATE LOGIC ---
-      // Step A: If we have a cached list, show it immediately
-      if (mfrsJson.cached && mfrsJson.cached.length > 0) {
+      // If the API indicates the reply came from KV cache, show cached immediately
+      if (mfrsJson.cached && Array.isArray(mfrsJson.data) && mfrsJson.cached.length > 0) {
         setManufacturers(mfrsJson.cached);
       }
 
-      // Step B: Update/Overwrite with the live list
+      // Overwrite with the authoritative live snapshot when present
       if (mfrsJson.data && mfrsJson.data.length > 0) {
         setManufacturers(mfrsJson.data);
       }
@@ -96,9 +96,6 @@ export const ShopDataProvider = ({ children }: ShopDataProviderProps) => {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
   useEffect(() => {
     fetchData();
   }, []);
